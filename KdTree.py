@@ -1,5 +1,11 @@
 from copy import deepcopy
 
+class KdTreeNode:
+    def __init__(self, point, left=None, right=None):
+        self.point = point
+        self.left = left
+        self.right = right
+        
 # with points in each node
 class KdTree:
     def __init__(self, points, depth=0):
@@ -10,6 +16,7 @@ class KdTree:
         self.axis = None               # axis to split on
         self.build(self.points, depth)
 
+    # build the tree recursively
     def build(self, points, depth):
         if len(points) == 1:
             return None
@@ -18,6 +25,23 @@ class KdTree:
         self.axis = points[median][depth % 2]
         self.left = KdTree(points[:median+1], depth + 1)
         self.right = KdTree(points[median+1:], depth + 1)
+
+    # check if the tree contains the point
+    def if_contains(self, point):
+        if self.axis == None:
+            return False
+        if self.axis == point[self.depth % 2]:
+            return True
+        if self.axis > point[self.depth % 2]:
+            return self.left.if_contains(point)
+        if self.axis < point[self.depth % 2]:
+            return self.right.if_contains(point)
+        
+    # find all points in the given rectangle 
+    def search_rectangle(self, lowerleft, upperright):
+        return None
+
+        
 
 
 # tests to check the correctness of the implementation
@@ -37,6 +61,10 @@ assert tree1.right.left.left.right.points[0] == test1[6]
 assert tree1.right.left.right.points[0] == test1[7]
 assert tree1.right.right.left.points[0] == test1[8]
 assert tree1.right.right.right.points[0] == test1[9]
+
+assert tree1.if_contains((1,2)) == True
+assert tree1.if_contains((2,5)) == True
+assert tree1.if_contains((3,3)) == False
 
 test2 = [(1,1)]
 tree2 = KdTree(test2)
