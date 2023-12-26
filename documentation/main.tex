@@ -1,0 +1,147 @@
+\documentclass{lab}
+
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{tocloft}
+\usepackage{amssymb}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{amsmath} 
+\usepackage{animate}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc} 
+\usepackage[top=0.5in, bottom=0.5in, left=0.5in, right=0.5in]{geometry}
+\usepackage{mathrsfs}
+\usepackage{hyperref}
+\usepackage{wrapfig}
+\usepackage{indentfirst}
+\usepackage{mathtools}
+\usepackage[export]{adjustbox}
+\usepackage{scrextend}
+\usepackage{animate}
+\usepackage{float}
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+\geometry{
+    margin=0.5in,
+    left=2.2cm,
+    right=2.2cm,
+    headheight=17pt,
+    headsep=1cm, % Increase the margin from the top for the header
+    includehead,
+    includefoot
+}
+
+\usepackage[T1]{fontenc}
+\usepackage[polish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{pythonhighlight}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{array}
+\usepackage[margin=0.5in,
+    left=2.2cm,
+    right=2.2cm,
+    headheight=17pt,
+    includehead, includefoot]{geometry}
+    
+%% nagłówek
+\usepackage{fancyhdr}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Algorytmy Geometryczne}
+\lhead{Wyszukiwanie geometryczne}
+\rfoot{\thepage}
+
+%% Podmiana \part na obecne wyświetlanie
+\makeatletter
+\renewcommand\@part[2][]{%
+  \ifnum \c@secnumdepth >-2\relax
+    \refstepcounter{part}%
+    \addcontentsline{toc}{part}{\thepart#2}%
+  \else
+    \addcontentsline{toc}{part}{#2}%
+  \fi
+  \markboth{}{}%
+  {\raggedright % Align title to the left
+   \interlinepenalty \@M
+   \normalfont
+   \ifnum \c@secnumdepth >-2\relax
+     \Large\bfseries \thepart\hspace{1em}%
+   \fi
+   \huge \bfseries #2\par}%
+  \@endpart
+}
+\makeatother
+
+\renewcommand\thepart{\Roman{part}. }
+
+\addtokomafont{labelinglabel}{\sffamily}
+
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\cftsubsecleader}{\cftdotfill{\cftdotsep}}
+
+
+\begin{document}
+
+\begin{figure*}
+    \centering
+    \includegraphics{agh.png}
+\end{figure*}
+\title{\Huge \textbf{Wyszukiwanie Geometryczne}\\QuadTree i KdTree \\ \huge Dokumentacja}
+\author{Weronika Wojtas, Radosław Rolka\\Algorytmy geometryczne\\Informatyka WI AGH, II rok}
+\date{}
+
+\maketitle
+\newpage
+\tableofcontents
+\thispagestyle{fancy} 
+\newpage
+
+\part{Wstęp}
+\section{Wymagania techniczne}
+...
+\section{Środowisko wykonawcze}
+...
+\section{Zawarość programu}
+...
+
+\part{Dokumentacja}
+\section{Visualizer}
+...
+\section{QuadTree}
+...
+\section{KdTree}
+...
+\section{Tests}
+...
+
+\part{Poradnik}
+\section{Testy}
+...
+\section{Wizualizacja}
+...
+
+\part{Sprawozdanie}
+\section{Wstęp teoretyczny}
+...
+\subsection{QuadTree}
+...
+\subsection{KdTree}
+...
+\section{Porównanie wyników dla różnych danych wejściowych}
+...
+\section{Porównanie wyników dla różnych wartości capacity}
+...chodzi o quadtree i max ilość punktów w węźle
+\section{Testowanie dla różnej ilości wymiarów}
+...chodzi o kdtree (k-dimension tree)
+\section{Podsumowanie}
+...
+
+\end{document}
+
