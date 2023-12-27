@@ -116,4 +116,3 @@ class Rectangle:
         ur = self.upperright.minimum(other.upperright)
         return Rectangle(ll, ur)
     
-    
