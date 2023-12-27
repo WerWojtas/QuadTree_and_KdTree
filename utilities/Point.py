@@ -2,6 +2,8 @@ from math import sqrt
 
 class Point:
     def __init__(self, point):
+        if len(point) < 1:
+            raise ValueError("Point must have at least one dimension")
         self._point = tuple(point)
 
     def __eq__(self, other):
@@ -23,7 +25,7 @@ class Point:
     
     @property
     def point(self):
-        return self._point.copy()
+        return list(self._point).copy()
     
     @property
     def x(self):
