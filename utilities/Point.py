@@ -39,33 +39,33 @@ class Point:
             raise ValueError("Can only compare Points")
         if len(self) != len(other):
             raise ValueError("Can only compare Points of the same dimensionality")
-        return all(x >= y for x, y in zip(self._point, other._point))
+        return all(x1 >= x2 for x1, x2 in zip(self._point, other._point))
     
     def precedes(self, other):
         if not isinstance(other, Point):
             raise ValueError("Can only compare Points")
         if len(self) != len(other):
             raise ValueError("Can only compare Points of the same dimensionality")
-        return all(x <= y for x, y in zip(self._point, other._point))
+        return all(x1 <= x2 for x1, x2 in zip(self._point, other._point))
     
     def distance(self, other):
         if not isinstance(other, Point):
             raise ValueError("Can only compare Points")
         if len(self) != len(other):
             raise ValueError("Can only compare Points of the same dimensionality")
-        return sqrt(sum((x - y) ** 2 for x, y in zip(self._point, other._point)))
+        return sqrt(sum((x1 - x2) ** 2 for x1, x2 in zip(self._point, other._point)))
     
     def minimum(self, other):
         if not isinstance(other, Point):
             raise ValueError("Can only compare Points")
         if len(self) != len(other):
             raise ValueError("Can only compare Points of the same dimensionality")
-        return Point([min(x, y) for x, y in zip(self._point, other._point)])
+        return Point([min(x1, x2) for x1, x2 in zip(self._point, other._point)])
     
     def maximum(self, other):
         if not isinstance(other, Point):
             raise ValueError("Can only compare Points")
         if len(self) != len(other):
             raise ValueError("Can only compare Points of the same dimensionality")
-        return Point([max(x, y) for x, y in zip(self._point, other._point)])
+        return Point([max(x1, x2) for x1, x2 in zip(self._point, other._point)])
     
