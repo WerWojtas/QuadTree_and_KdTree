@@ -20,6 +20,9 @@ class Rectangle:
             return False
         return self._lowerleft == other._lowerleft and self._upperright == other._upperright
 
+    def __hash__(self):
+        return hash((self._lowerleft, self._upperright))
+
     def __str__(self):
         return f"({self._lowerleft}, {self._upperright})"
     

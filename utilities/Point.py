@@ -11,6 +11,9 @@ class Point:
             return False
         return self._point == other._point
     
+    def __hash__(self):
+        return hash(self._point)
+
     def __str__(self):
         return str(self._point)
     
