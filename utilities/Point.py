@@ -8,8 +8,17 @@ class Point:
 
     def __eq__(self, other):
         if not isinstance(other, Point):
-            return False
+            return Point(other) == self
         return self._point == other._point
+    
+    """
+    def __lt__(self, other):
+        if not isinstance(other, Point):
+            raise ValueError("Can only compare Points")
+        if len(self) != len(other):
+            raise ValueError("Can only compare Points of the same dimensionality")
+        return self._point < other._point
+    """
     
     def __hash__(self):
         return hash(self._point)
@@ -41,35 +50,35 @@ class Point:
     
     def follows(self, other):
         if not isinstance(other, Point):
-            raise ValueError("Can only compare Points")
+            other = Point(other)
         if len(self) != len(other):
             raise ValueError("Can only compare Points of the same dimensionality")
         return all(x1 >= x2 for x1, x2 in zip(self._point, other._point))
     
     def precedes(self, other):
         if not isinstance(other, Point):
-            raise ValueError("Can only compare Points")
+            other = Point(other)
         if len(self) != len(other):
             raise ValueError("Can only compare Points of the same dimensionality")
         return all(x1 <= x2 for x1, x2 in zip(self._point, other._point))
     
     def distance(self, other):
         if not isinstance(other, Point):
-            raise ValueError("Can only compare Points")
+            other = Point(other)
         if len(self) != len(other):
             raise ValueError("Can only compare Points of the same dimensionality")
         return sqrt(sum((x1 - x2) ** 2 for x1, x2 in zip(self._point, other._point)))
     
     def minimum(self, other):
         if not isinstance(other, Point):
-            raise ValueError("Can only compare Points")
+            other = Point(other)
         if len(self) != len(other):
             raise ValueError("Can only compare Points of the same dimensionality")
         return Point([min(x1, x2) for x1, x2 in zip(self._point, other._point)])
     
     def maximum(self, other):
         if not isinstance(other, Point):
-            raise ValueError("Can only compare Points")
+            other = Point(other)
         if len(self) != len(other):
             raise ValueError("Can only compare Points of the same dimensionality")
         return Point([max(x1, x2) for x1, x2 in zip(self._point, other._point)])
