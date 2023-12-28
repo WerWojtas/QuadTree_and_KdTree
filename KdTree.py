@@ -1,6 +1,8 @@
 from utilities.Point import Point
 from utilities.Rectangle import Rectangle
 
+from copy import deepcopy
+
 class KdTree:
     def __init__(self, points, depth=0, points_in_node=False):
         if len(points) == 0:
@@ -93,12 +95,12 @@ class KdTree_visualizer:
             raise ValueError("The list of points is empty.")
         if not all(len(point) == len(points[0]) for point in points):
             raise ValueError("The points have different dimensions.")
-        points = [Point(point) for point in points]
+        self.points = [Point(point) for point in points]
         self.vis = Visualizer()
         self.vis.add_title(title)
-        self.vis.add_point([(p.point) for p in points])
+        self.vis.add_point([(p.point) for p in self.points])
         self.scene = {}
-        self._root = KdTreeNode_v(points, Rectangle.from_points(points), self.vis, self.scene, depth, points_in_node)
+        self._root = KdTreeNode_v(self.points, Rectangle.from_points(self.points), self.vis, self.scene, depth, points_in_node)
         self.vis.save_gif(filename=filename)
         self._points_in_node = points_in_node
         self._dimension = len(points[0])
@@ -109,8 +111,11 @@ class KdTree_visualizer:
             raise ValueError("The point has different dimension than the points in the tree.")
         if not isinstance(point, Point):
             point = Point(point)
-        result = self._root._if_contains(point)
-        self.vis.save_gif(filename="KdTree-contain", interval=2000)
+        vis = deepcopy(self.vis)
+        vis.add_title("KdTree")
+        vis.add_point([(p.point) for p in self.points])
+        result = self._root._if_contains(point, vis)
+        vis.save_gif(filename="KdTree-contain", interval=300)
         return result
     
     # find all points in the given rectangle
@@ -119,7 +124,12 @@ class KdTree_visualizer:
             raise ValueError("The rectangle is not a Rectangle object.")
         if len(rectangle) != self._dimension:
             raise ValueError("The rectangle has different dimension than the points in the tree.")
-        result = self._root._search_rectangle(rectangle, self._points_in_node)
+        vis = deepcopy(self.vis)
+        vis.add_title("KdTree")
+        vis.add_polygon(rectangle.vertices2D(), color="orange", alpha=0.3)
+        vis.add_point([(p.point) for p in self.points])
+        result = self._root._search_rectangle(rectangle, vis, self._points_in_node)
+        vis.save_gif(filename="KdTree-search", interval=500)
         if raw:
             return [point.point for point in result]
         return result
@@ -155,28 +165,37 @@ class KdTreeNode_v:
             self._right = KdTreeNode_v(points[median+1:], rr, self.vis, self.scene, depth + 1, points_in_node)
 
     # check if the tree contains the point
-    def _if_contains(self, point):
+    def _if_contains(self, point, vis):
+        vis.remove_figure(vis.add_polygon(self._rectangle.vertices2D(), color="orange", alpha=0.3))
         if self._axis == None:
+            if point == self._points[0]:
+                vis.add_point([point.point], color="red")
+            else:
+                vis.add_point([point.point], color="black")
             return point == self._points[0]
         if self._axis >= point[self._depth % len(point)]:
-            return self._left._if_contains(point)
+            return self._left._if_contains(point, vis)
         if self._axis < point[self._depth % len(point)]:
-            return self._right._if_contains(point)
+            return self._right._if_contains(point, vis)
         
-    def _add_leaves(self, points_in_node=False):
+    def _add_leaves(self, vis, points_in_node=False):
         if points_in_node:
+            vis.add_point([point.point for point in self._points], color="red")
             return self._points
         else:
             if self._axis is None:
+                vis.add_point([point.point for point in self._points], color="red")
                 return self._points
-            return self._left._add_leaves() + self._right._add_leaves()
+            return self._left._add_leaves(vis) + self._right._add_leaves(vis)
         
     # find all points in the given rectangle 
-    def _search_rectangle(self, area, points_in_node=False):
+    def _search_rectangle(self, area, vis, points_in_node=False):
+        vis.remove_figure(vis.add_polygon(self._rectangle.vertices2D(), color="green", alpha=0.3))
         if self._axis is None:
+            vis.add_point([point for point in self._points if area.contains(point)], color="red")
             return [point for point in self._points if area.contains(point)]
         if area.contains(self._rectangle):
-            return self._add_leaves(points_in_node)
+            return self._add_leaves(points_in_node, vis)
         if area.does_intersect(self._rectangle):
-            return self._left._search_rectangle(area, points_in_node) + self._right._search_rectangle(area, points_in_node)
+            return self._left._search_rectangle(area, vis, points_in_node) + self._right._search_rectangle(area, vis, points_in_node)
         return []
