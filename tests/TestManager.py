@@ -5,7 +5,8 @@ class TestManager:
     def __init__(self, tree):
         self._tests = [self.contain_point_int,
                        self.contain_point_float,
-                      self.points_in_rectangle]
+                       self.points_in_rectangle_int,
+                       self.points_in_rectangle_float]
         self.mytree = tree
 
     def all_tests(self):
@@ -66,19 +67,45 @@ class TestManager:
         print(f"\nPassed {good}/{all} tests.")
         return good, all
     
-    def points_in_rectangle(self):
-        print("Test points_in_rectangle:")
-        return 0, 0
+    def points_in_rectangle_int(self):
+        print("Test points_in_rectangle_int:")
         points = [((1,2), (3,4), (5,6), (7,8), (9,10)),
-                  ((-1,-2), (-3,-4), (-5,-6), (-7,-8), (-9,-10))]
-        checks = [{Rectangle((1,1), (2,2)):((1,2)), Rectangle((-4,-5), (0,0)):()},
-                  {Rectangle((-10,-10), (-1,-1)):((-1,-2), (-3,-4), (-5,-6), (-7,-8), (-9,-10))}]
+                  ((-1,-2), (-3,-4), (-5,-6), (-7,-8), (-9,-10)),
+                  ((14, 93), (17, 73), (19, 33), (27, 68), (29, 72), (33, 30), (50, 57), (59, 17), (62, 63), (66, 41), (85, 56), (86, 58), (91, 11), (92, 98), (98, 47))]
+        checks = [{Rectangle((1,1), (2,2)):[(1,2)], Rectangle((-4,-5), (0,0)):[]},
+                  {Rectangle((-10,-10), (-1,-1)):[(-1,-2), (-3,-4), (-5,-6), (-7,-8), (-9,-10)]},
+                  {Rectangle((30,10), (95, 70)): [(33, 30), (50, 57), (59, 17), (62, 63), (66, 41), (85, 56), (86, 58), (91, 11)]}]
         good = all = 0
         for i in range(len(points)):
             tree = self.mytree(points[i])
-            for point, expected in checks[i].items():
-                actual = tree.if_contains(point)
-                if actual != expected:
+            for rect, expected in checks[i].items():
+                actual = tree.search_in_rectangle(rect, raw=True)
+                if not self.same(actual, expected):
+                    print("0", end="")
+                else:
+                    print("+", end="")
+                    good += 1
+                all += 1
+        print(f"\nPassed {good}/{all} tests.")
+        return good, all
+    
+    def points_in_rectangle_float(self):
+        print("Test points_in_rectangle_float:")
+        points = [((13.0088, 73.47405),  (19.37122, 92.27245), (26.81686, 60.45529),
+                  (30.86009, 77.78741), (31.64859, 88.05649), (47.89563, 63.91615),
+                  (54.94825, 57.69471), (58.60036, 39.4115),  (66.36514, 72.69857),
+                  (69.98282, 24.71197), (71.91889, 40.94198), (81.91302, 87.35569),
+                  (89.44507, 18.6295),  (97.43819, 18.13145), (98.47172, 44.33949))]
+        checks = [{Rectangle((22.123, 15.423), (87.639, 82.873)):[(26.81686, 60.45529), (30.86009, 77.78741),
+                                                                  (47.89563, 63.91615), (54.94825, 57.69471),
+                                                                  (58.60036, 39.4115),  (66.36514, 72.69857),
+                                                                  (69.98282, 24.71197), (71.91889, 40.94198)]}]
+        good = all = 0
+        for i in range(len(points)):
+            tree = self.mytree(points[i])
+            for rect, expected in checks[i].items():
+                actual = tree.search_in_rectangle(rect, raw=True)
+                if not self.same(actual, expected):
                     print("0", end="")
                 else:
                     print("+", end="")
@@ -87,7 +114,15 @@ class TestManager:
         print(f"\nPassed {good}/{all} tests.")
         return good, all
 
-
-
-
-
+    def same(self, act, exp):
+        act = [tuple(i) for i in act]
+        exp = [tuple(i) for i in exp]
+        if len(act) != len(exp):
+            return False
+        for i in act:
+            if i not in exp:
+                return False
+        for i in exp:
+            if i not in act:
+                return False
+        return True

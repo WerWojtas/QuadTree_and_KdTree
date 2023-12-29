@@ -119,3 +119,22 @@ class Rectangle:
         ur = self.upperright.minimum(other.upperright)
         return Rectangle(ll, ur)
     
+    def vertices2D(self):
+        """
+        Compute the vertices of the 2D rectangle
+        @return: a list of points representing the vertices of the rectangle
+        """
+        if len(self) != 2:
+            raise ValueError("Can only compute vertices of a 2D rectangle")
+        ul = Point([self.lowerleft[0], self.upperright[1]])
+        lr = Point([self.upperright[0], self.lowerleft[1]])
+        return [self.lowerleft, ul, self.upperright, lr]
+    
+    def opposite(self, point, depth):
+        """
+        Compute the opposite point on rectangle with a given point [2d only]
+        """
+        if depth:
+            return (self.lowerleft[0], point[1]), (self.upperright[0], point[1])
+        else:
+            return (point[0], self.lowerleft[1]), (point[0], self.upperright[1])
