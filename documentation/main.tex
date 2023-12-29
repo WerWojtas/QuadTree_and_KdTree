@@ -41,6 +41,9 @@
 \usepackage{amssymb}
 \usepackage{mathtools}
 \usepackage{array}
+\usepackage{xpatch}
+
+\xpretocmd{\part}{\setcounter{section}{0}}{}{}
 \usepackage[margin=0.5in,
     left=2.2cm,
     right=2.2cm,
@@ -91,11 +94,11 @@
 
 \begin{figure*}
     \centering
-    \includegraphics{agh.png}
+    \includegraphics{resources/agh.png}
 \end{figure*}
 \title{\Huge \textbf{Wyszukiwanie Geometryczne}\\QuadTree i KdTree \\ \huge Dokumentacja}
 \author{Weronika Wojtas, Radosław Rolka\\Algorytmy geometryczne\\Informatyka WI AGH, II rok}
-\date{}
+\date{2023}
 
 \maketitle
 \newpage
@@ -104,24 +107,206 @@
 \newpage
 
 \part{Wstęp}
+\section{Informacje wstępne}
+Celem tej dokumentacji jest przedstawienie zaawansowanych technik wyszukiwania geometrycznego, z naciskiem na implementację i zastosowanie KdTree oraz QuadTree oraz ich porównanie.
+
+Projekt został zaimplementowany w języku Python 3.9 z wykorzystaniem aplikacji Jupyter Notebook. Kod źródłowy wraz z dokumentacją zamieszczony jest w repozytorium GitHub.
+
 \section{Wymagania techniczne}
-...
+\begin{itemize}
+    \item python >= 3.9
+    \item numpy >= 1.25.2
+    \item pandas >= 2.0.3
+    \item matplotlib >= 3.7.2
+    \item notebook >= 6.5.4
+    \item functools (Python Standard Library)
+    \item math (Python Standard Library)
+    \item copy (Python Standard Library)
+\end{itemize}
+
 \section{Środowisko wykonawcze}
-...
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+ & Komputer 1 & Komputer 2 \\
+\hline
+Procesor & Intel(R) Core(TM) I5-10300H 2.50GHz & TODO \\
+\hline
+System operacyjny & Microsoft Windows 10 64bit ver 22H2 & TODO \\
+\hline
+\end{tabular}
+\caption{Dane techniczne maszyn wykonawczych}
+\end{table}
+Porównanie efektywności struktur zostało wykonane na Komputerze 1.
 \section{Zawarość programu}
-...
+Program składa się z następujących plików:
+\begin{itemize}
+    \item KdTree.py
+    \item QuadTree.py
+    \item visualizer/
+    \item utilities/
+    \item tests/
+    \item documentation/
+    \item comparator/
+    TODO: napisać jak to wygląda w praktyce
+\end{itemize}
 
 \part{Dokumentacja}
-\section{Visualizer}
-...
+\section{Utilities}
+Ten moduł zapewnia podstawowe klasy elementów geometrycznych: punkt (Point) i prostokąt (Rectangle), które unifikują dane wejściowe do obu implementacji drzew oraz zapewniają walidację wprowadzonych danych.
+\subsection{Point}
+Reprezentacja niemutowalnego punktu o dodatniej liczbie wymiarów.
+\begin{itemize}
+    \item \textbf{Point(point)}: 
+    
+    Konstruktor punktu przyjmuje iterowalny obiekt jako argument i zapisuje jego wartości jako kolejne wymiary dla punktu.
+    
+    Wywołuje ValueError("Point must have at least one dimension") jeśli obiekt jest pusty.
+    \item \textbf{\_\_eq\_\_(self, other)}:
+    
+    Porównuje punkty na podstawie ich wymiarów, zwraca True jeśli wymiary są równe, w przeciwnym wypadku False. Umożliwia porównywanie punktów oraz innych iterowalnch struktur za pomocą operatorów == i !=.
+    \item \textbf{\_\_hash\_\_(self)}:
+    
+    Zwraca hash punktu, umożliwiając jego użycie jako klucza w słownikach.
+
+    \item \textbf{\_\_str\_\_(self) / \_\_repr\_\_(self)}:
+    
+    Zwraca string reprezentujący punkt w postaci (x1, x2, ..., xn).
+
+    \item \textbf{\_\_len\_\_(self)}:
+    
+    Zwraca liczbę wymiarów punktu.
+
+    \item \textbf{\_\_getitem\_\_(self, key)}:
+    
+    Zwraca wymiar o indeksie key, umożliwiając dostęp do wymiarów punktu za pomocą operatora nawiasów kwadratowych.
+
+    \item \textbf{point(self)}:
+    
+    @property Zwraca listę zawierającą kopię wymiarów punktu.
+
+    \item \textbf{x(self)}:
+    
+    @property Zwraca pierwszy wymiar punktu.
+
+    \item \textbf{y(self)}:
+    
+    @property Zwraca drugi wymiar punktu, jeśli istnieje.
+
+    \item \textbf{follows(self, other)}:
+    
+    Zwraca True jeśli punkt jest większy od other w każdym wymiarze, w przeciwnym wypadku False. Zezwala na porównywanie obiektów iterowalnych.
+    Wywołuje ValueError("Can only compare Points of the same dimensionality") jeśli wymiary punktów nie są równe.
+
+    \item \textbf{precedes(self, other)}:
+    
+    Zwraca True jeśli punkt jest mniejszy od other w każdym wymiarze, w przeciwnym wypadku False. Zezwala na porównywanie obiektów iterowalnych.
+
+    Wywołuje ValueError("Can only compare Points of the same dimensionality") jeśli wymiary punktów nie są równe.
+
+    \item \textbf{distance(self, other)}:
+    
+    Zwraca odległość między punktami. Zezwala na porównywanie obiektów iterowalnych.
+
+    Wywołuje ValueError("Can only compare Points of the same dimensionality") jeśli wymiary punktów nie są równe.
+
+    \item \textbf{minimum(self, other)}:
+
+    Zwraca punkt zawierający najmniejsze wartości z obu punktów. Zezwala na porównywanie obiektów iterowalnych.
+
+    Wywołuje ValueError("Can only compare Points of the same dimensionality") jeśli wymiary punktów nie są równe.
+
+    \item \textbf{maximum(self, other)}:
+    
+    Zwraca punkt zawierający największe wartości z obu punktów. Zezwala na porównywanie obiektów iterowalnych.
+
+    Wywołuje ValueError("Can only compare Points of the same dimensionality") jeśli wymiary punktów nie są równe.    
+\end{itemize}
+
+\subsection{Rectangle}
+Reprezentacja niemutowalnego prostokąta o dodatniej liczbie wymiarów, zapisanego jako dwa przeciwległe wierzchołki: lewy dolny (lowerleft) i prawy górny (upperright).
+\begin{itemize}
+  \item \textbf{Rectangle(lowerleft, upperright)}:
+  
+  Konstruktor prostokąta przyjmuje dwa punkty (lub obiekty iterowalne) jako argumenty i zapisuje je jako przeciwległe wierzchołki prostokąta.
+
+  Wywołuje ValueError("Points must have the same dimensionality") jeśli wymiary punktów nie są równe.
+
+  Wywołuje ValueError("LowerLeft point must precede the UpperRight point") jeśli któryś z wymiarów punktu lowerleft jest większy niż odpowiadający mu wymiar punktu upperright.
+
+  \item \textbf{\_\_eq\_\_(self, other)}:
+  
+  Porównuje prostokąty na podstawie ich wierzchołków, zwraca True jeśli wierzchołki są równe, w przeciwnym wypadku False. Umożliwia porównywanie za pomocą operatorów == i !=.
+
+  \item \textbf{\_\_hash\_\_(self)}:
+  
+  Zwraca hash prostokąta, umożliwiając jego użycie jako klucza w słownikach.
+
+  \item \textbf{\_\_str\_\_(self) / \_\_repr\_\_(self)}:
+  
+  Zwraca string reprezentujący prostokąt w postaci [(x1, x2, ..., xn), (y1, y2, ..., yn)].
+
+  \item \textbf{\_\_len\_\_(self)}:
+  
+  Zwraca liczbę wymiarów prostokąta.
+
+  \item \textbf{lowerleft(self)}:
+  
+  @property Zwraca punkt lowerleft.
+
+  \item \textbf{upperright(self)}:
+  
+  @property Zwraca punkt upperright.
+
+  \item \textbf{from\_points(cls, points)}:
+  
+  @classmethod Tworzy najmniejszy prostokąt zawierający wszystkie punkty (lub obiekty iterowalne) z listy points.
+
+  Wywołuje ValueError("Cannot create a Rectangle from an empty list of points") jeśli lista points jest pusta.
+
+  Wywołuje ValueError("Points must have the same dimensionality") jeśli wymiary punktów nie są równe.
+
+  \item \textbf{does\_intersect(self, other)}:
+  
+  Sprawdza czy dwa prostokąty przecinają się (mają conajmniej jeden punkt wspólny), zwraca True jeśli tak, w przeciwnym wypadku False.
+
+  Wywołuje ValueError("Can only check intersection with another Rectangle") jeśli other nie jest prostokątem.
+
+  Wywołuje ValueError("Can only check intersection with a Rectangle of the same dimensionality") jeśli wymiary prostokątów nie są równe.
+
+  \item \textbf{contains(self, object)}:
+  
+  Sprawdza czy punkt lub prostokąt jest całkowicie zawarty w prostokącie, zwraca True jeśli tak, w przeciwnym wypadku False. Jeśli obiekt nie jest prostokątem, funkcja uznaje go za punkt.
+
+  \item \textbf{divide(self, dimension, value)}:
+  
+  Dzieli prostokąt na dwa prostokąty wzdłuż wymiaru dimension i wartości value, zwraca krotkę dwóch prostokątów.
+
+  Wywołuje ValueError("Dimension must be between 0 and {len(self)-1}") jeśli wymiar dimension jest mniejszy niż 0 lub większy niż liczba wymiarów prostokąta - 1.
+
+  Wywołuje ValueError("Value must be between {self.lowerleft[dimension]} and {self.upperright[dimension]}") jeśli wartość value jest mniejsza niż wartość wymiaru dimension punktu lowerleft lub większa niż wartość wymiaru dimension punktu upperright.
+
+  \item \textbf{intersection(self, other)}:
+  
+  Zwraca prostokąt będący częścią wspólną dwóch prostokątów lub None jeśli prostokąty się nie przecinają.
+
+  Wywołuje ValueError("Can only compute intersection with another Rectangle") jeśli other nie jest prostokątem.
+
+  Wywołuje ValueError("Can only compute intersection with a Rectangle of the same dimensionality") jeśli wymiary prostokątów nie są równe.
+\end{itemize}
 \section{QuadTree}
 ...
 \section{KdTree}
 ...
+\section{Comparator}
+...
 \section{Tests}
 ...
+\section{Visualizer}
+...
 
-\part{Poradnik}
+\part{Instrukcja}
 \section{Testy}
 ...
 \section{Wizualizacja}
@@ -144,4 +329,3 @@
 ...
 
 \end{document}
-

@@ -20,6 +20,9 @@ class Rectangle:
             return False
         return self._lowerleft == other._lowerleft and self._upperright == other._upperright
 
+    def __hash__(self):
+        return hash((self._lowerleft, self._upperright))
+
     def __str__(self):
         return f"({self._lowerleft}, {self._upperright})"
     
@@ -47,8 +50,9 @@ class Rectangle:
         """
         if not points:
             raise ValueError("Cannot create a Rectangle from an empty list of points")
-        if not all(isinstance(p, Point) for p in points):
-            raise ValueError("All points must be instances of Point")
+        for point in points:
+            if not isinstance(point, Point):
+                point = Point(point)
         if not all(len(p) == len(points[0]) for p in points):
             raise ValueError("All points must have the same dimensionality")
         lowerleft = reduce(lambda p1, p2: p1.minimum(p2), points)
@@ -73,15 +77,14 @@ class Rectangle:
         Check if a point/rectangle is FULLY contained in the rectangle
         @param object: a point or a rectangle
         @return: True if the point/rectangle is fully contained in the rectangle, False otherwise
-        raises ValueError if the object is not a point or a rectangle
         """
-        if isinstance(object, Point):
-            return self.lowerleft.precedes(object) and self.upperright.follows(object)
-        elif isinstance(object, Rectangle):
+        if isinstance(object, Rectangle):
             return self.lowerleft.precedes(object.lowerleft) and self.upperright.follows(object.upperright)
         else:
-            raise ValueError("Can only check containment of a Point or a Rectangle")
-        
+            if not isinstance(object, Point):
+                object = Point(object)
+            return self.lowerleft.precedes(object) and self.upperright.follows(object)
+
     def divide(self, dimension, value):
         """
         Divide the rectangle into two rectangles along a given dimension and value

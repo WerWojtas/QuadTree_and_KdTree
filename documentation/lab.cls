@@ -1,5 +1,5 @@
+\ProvidesClass{lab}
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{fizykalab}
 
 \LoadClass{article}
 
