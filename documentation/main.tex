@@ -31,6 +31,39 @@
     includefoot
 }
 
+% python color
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{caption}
+
+% Define VSC Dark+ colors
+\definecolor{vscode-background}{rgb}{0.0, 0.0, 0.0}
+\definecolor{vscode-foreground}{rgb}{0.96, 0.96, 0.96}
+\definecolor{vscode-comment}{rgb}{0.51, 0.51, 0.51}
+\definecolor{vscode-orange}{rgb}{1.0, 0.6, 0.0}
+\definecolor{vscode-yellow}{rgb}{0.98, 0.83, 0.26}
+\definecolor{vscode-green}{rgb}{0.19, 0.8, 0.35}
+\definecolor{vscode-cyan}{rgb}{0.16, 0.71, 0.73}
+\definecolor{vscode-blue}{rgb}{0.13, 0.48, 0.78}
+\definecolor{vscode-purple}{rgb}{0.58, 0.4, 0.72}
+\definecolor{vscode-pink}{rgb}{0.8, 0.36, 0.36}
+
+% Define the style
+\lstdefinestyle{vscode-darkplus-python}{
+    language=Python,
+    backgroundcolor=\color{vscode-background},
+    basicstyle=\color{vscode-foreground}\ttfamily\small,
+    commentstyle=\color{vscode-comment},
+    keywordstyle=\color{vscode-orange},
+    numberstyle=\tiny\color{vscode-comment},
+    numbers=left,
+    stringstyle=\color{vscode-green},
+    emphstyle=\color{vscode-pink},
+    frame=none,
+}
+% Change the caption label to "Kod źródłowy"
+\DeclareCaptionLabelFormat{myformat}{Kod źródłowy #2}
+
 \usepackage[T1]{fontenc}
 \usepackage[polish]{babel}
 \usepackage[utf8]{inputenc}
@@ -91,6 +124,7 @@
 
 
 \begin{document}
+\captionsetup[lstlisting]{labelformat=myformat}
 
 \begin{figure*}
     \centering
@@ -144,15 +178,16 @@ Program składa się z następujących plików:
 \begin{itemize}
     \item KdTree.py
     \item QuadTree.py
+    \item Comparision.ipynb
     \item visualizer/
     \item utilities/
     \item tests/
     \item documentation/
     \item comparator/
-    TODO: napisać jak to wygląda w praktyce
 \end{itemize}
 
 \part{Dokumentacja}
+W tym rozdziale znajduje się szczegółowa dokumentacja poszczególnych modułów programu, które są przewidziane do wykorzystania przez użytkownika. Klasy oraz metody, które nie są wymienione w tej dokumentacji, nie są przewidziane do bezpośredniego użycia.
 \section{Utilities}
 Ten moduł zapewnia podstawowe klasy elementów geometrycznych: punkt (Point) i prostokąt (Rectangle), które unifikują dane wejściowe do obu implementacji drzew oraz zapewniają walidację wprowadzonych danych.
 \subsection{Point}
@@ -294,21 +329,429 @@ Reprezentacja niemutowalnego prostokąta o dodatniej liczbie wymiarów, zapisane
   Wywołuje ValueError("Can only compute intersection with another Rectangle") jeśli other nie jest prostokątem.
 
   Wywołuje ValueError("Can only compute intersection with a Rectangle of the same dimensionality") jeśli wymiary prostokątów nie są równe.
+
+  \item \textbf{vertices2D(self)}:
+
+  Zwraca listę punktów będących wierzchołkami prostokąta, jeśli prostokąt jest dwuwymiarowy.
+
+  Wywołuje ValueError("Can only compute vertices of a 2D rectangle") jeśli prostokąt nie jest dwuwymiarowy.
+
+  \item \textbf{opposite(self, point, depth)}:
+
+  Zwraca dwa punkty leżące na przeciwległych bokach prostokąta o dwóch wymiarach, wzdłuż wymiaru depth, takie że point również leży na tym odcinku.
+
+  Wywołuje ValueError("Can only compute opposite points of a 2D rectangle") jeśli prostokąt nie jest dwuwymiarowy. 
 \end{itemize}
+
 \section{QuadTree}
-...
+TODO
+
 \section{KdTree}
-...
+Plik zawiera implementację drzewa KdTree (KdTree) oraz jego bliźniaczą wersję (KdTree\_visualizer), która umożliwia wizualizację drzewa w postaci gifów.
+\subsection{KdTree}
+Klasa implementująca drzewo KdTree wraz z metodami wyszukiwania oraz weryfikacją danych wejściowych.
+\begin{itemize}
+  \item \textbf{KdTree(points, depth=0, points\_in\_node=False)}:
+  Konstruktor drzewa przyjmuje listę punktów (obiekty klasy Point lub obiektów iterowalnych) jako argument i tworzy drzewo zawierające te punkty.
+  - points: lista punktów (obiektów klasy Point lub obiektów iterowalnych), które będą przechowywane w drzewie.
+
+  - depth: głębokość węzła, operacja $\%len(point)$ wskazuje na wymiar, w którym następuje podział węzła.
+
+  - points\_in\_node: określa czy w każdym węźle przechowywana jest lista znajdujących się w nim punktów (True), czy tylko w liściach (False).
+
+  - RESULT: drzewo KdTree zawierające punkty z listy points.
+
+  Wywołuje ValueError("The list of points is empty.") jeśli lista points jest pusta.
+
+  Wywołuje ValueError("The points have different dimensions.") jeśli wymiary punktów nie są równe.
+  
+  \item \textbf{if\_contains(self, point)}:
+  Sprawdza czy drzewo zawiera punkt (obiekt klasy Point lub obiekt iterowalny), zwraca True jeśli tak, w przeciwnym wypadku False.
+
+  - point: punkt (obiekt klasy Point lub obiekt iterowalny), który ma zostać wyszukany w drzewie.
+
+  - RESULT: True jeśli drzewo zawiera punkt, False w przeciwnym wypadku.
+
+  Wywołuje ValueError("The point has different dimension than the points in the tree.") jeśli wymiary punktu nie są równe wymiarom punktów w drzewie.
+
+  \item \textbf{search\_in\_rectangle(self, rectangle, raw=False)}:
+  Wyszukuje punkty znajdujące się w prostokącie (obiekt klasy Rectangle), zwraca listę punktów (obiektów klasy Point) lub listę list punktów (obiektów klasy Point) w zależności od wartości parametru raw.
+
+  - rectangle: prostokąt (obiekt klasy Rectangle), w którym wyszukiwane są punkty.
+
+  - raw: określa czy zwracana lista ma zawierać obiekty klasy Point (False) lub listy współrzędnych punktów (True).
+
+  - RESULT: lista punktów (obiektów klasy Point) lub lista list punktów (obiektów klasy Point) w zależności od wartości parametru raw.
+
+  Wywołuje ValueError("The rectanangle is not a Rectangle object.") jeśli rectangle nie jest obiektem klasy Rectangle.
+
+  Wywołuje ValueError("The rectangle has different dimension than the points in the tree.") jeśli wymiary prostokąta nie są równe wymiarom punktów w drzewie.
+\end{itemize}
+
+\subsection{KdTree\_visualizer}
+Klasa implementująca drzewo KdTree wraz z metodami wyszukiwania oraz weryfikacją danych wejściowych. Dodatkowo umożliwia wizualizację drzewa w postaci gifów.
+\begin{itemize}
+  \item \textbf{KdTree\_visualizer(points, depth=0, points\_in\_node=False, title="KdTree", filename="KdTree-construction")}:
+  Konstruktor drzewa przyjmuje listę punktów (obiekty klasy Point lub obiektów iterowalnych) jako argument i tworzy drzewo zawierające te punkty. Dodatkowo tworzy obiekt klasy Visualizer i zapisuje plik o rozszerzeniu .gif w tym samym folderze.
+
+  - points: lista punktów (obiektów klasy Point lub obiektów iterowalnych), które będą przechowywane w drzewie.
+
+  - depth: głębokość węzła, operacja $\%len(point)$ wskazuje na wymiar, w którym następuje podział węzła.
+
+  - points\_in\_node: określa czy w każdym węźle przechowywana jest lista znajdujących się w nim punktów (True), czy tylko w liściach (False).
+
+  - title: tytuł wyświetlany na wykresie.
+
+  - filename: nazwa pliku .gif, w którym zapisywana jest wizualizacja.
+
+  - RESULT: drzewo KdTree zawierające punkty z listy points.
+
+  Wywołuje ValueError("The list of points is empty.") jeśli lista points jest pusta.
+
+  Wywołuje ValueError("The points have different dimensions.") jeśli wymiary punktów nie są równe.
+
+  \item \textbf{if\_contains(self, point, title="KdTree", filename="KdTree-contains")}:
+  Sprawdza czy drzewo zawiera punkt (obiekt klasy Point lub obiekt iterowalny), zwraca True jeśli tak, w przeciwnym wypadku False. Dodatkowo tworzy obiekt klasy Visualizer i zapisuje plik o rozszerzeniu .gif w tym samym folderze.
+
+  - point: punkt (obiekt klasy Point lub obiekt iterowalny), który ma zostać wyszukany w drzewie.
+
+  - title: tytuł wyświetlany na wykresie.
+
+  - filename: nazwa pliku .gif, w którym zapisywana jest wizualizacja.
+
+  - RESULT: True jeśli drzewo zawiera punkt, False w przeciwnym wypadku.
+
+  Wywołuje ValueError("The point has different dimension than the points in the tree.") jeśli wymiary punktu nie są równe wymiarom punktów w drzewie.
+
+  \item \textbf{search\_in\_rectangle(self, rectangle, raw=False, title="KdTree", filename="KdTree-search")}:
+  Wyszukuje punkty znajdujące się w prostokącie (obiekt klasy Rectangle), zwraca listę punktów (obiektów klasy Point) lub listę list punktów (obiektów klasy Point) w zależności od wartości parametru raw. Dodatkowo tworzy obiekt klasy Visualizer i zapisuje plik o rozszerzeniu .gif w tym samym folderze.
+
+  - rectangle: prostokąt (obiekt klasy Rectangle), w którym wyszukiwane są punkty.
+
+  - raw: określa czy zwracana lista ma zawierać obiekty klasy Point (False) lub listy współrzędnych punktów (True).
+
+  - title: tytuł wyświetlany na wykresie.
+
+  - filename: nazwa pliku .gif, w którym zapisywana jest wizualizacja.
+
+  - RESULT: lista punktów (obiektów klasy Point) lub lista list punktów (obiektów klasy Point) w zależności od wartości parametru raw.
+
+  Wywołuje ValueError("The rectanangle is not a Rectangle object.") jeśli rectangle nie jest obiektem klasy Rectangle.
+
+  Wywołuje ValueError("The rectangle has different dimension than the points in the tree.") jeśli wymiary prostokąta nie są równe wymiarom punktów w drzewie.
+\end{itemize}
+
 \section{Comparator}
-...
+Moduł zawiera implementację porównania drzew QuadTree i KdTree oraz klasę generującą przypadki testowe.
+\subsection{CaseGenerator}
+Klasa generująca przypadki testowe dla struktur QuadTree i KdTree.
+\begin{itemize}
+  \item \textbf{CaseGenerator()}:
+  Konstruktor klasy CaseGenerator.
+  \item \textbf{uniform\_distribution(self, quantity, rectangle, raw=True)}:
+  Generuje punkty z rozkładem jednorodnym wewnątrz prostokąta.
+
+  - quantity: liczba punktów do wygenerowania.
+
+  - rectangle: prostokąt (obiekt klasy Rectangle), w którym mają zostać wygenerowane punkty.
+
+  - raw: określa czy zwracana lista ma zawierać obiekty klasy Point (False) lub listy współrzędnych punktów (True).
+
+  - RESULT: lista punktów (obiektów klasy Point) lub lista list punktów (obiektów klasy Point) w zależności od wartości parametru raw.
+
+  Wywołuje ValueError("quantity must be positive") jeśli quantity jest mniejsze od 0.
+
+  Wywołuje ValueError("The rectanangle is not a Rectangle object.") jeśli rectangle nie jest obiektem klasy Rectangle.
+
+  \item \textbf{normal\_distribution(self, quantity, rectangle, raw=True, mu=None, sigma=None)}:
+
+  Generuje punkty z rozkładem normalnym wewnątrz prostokąta.
+
+  - quantity: liczba punktów do wygenerowania.
+
+  - rectangle: prostokąt (obiekt klasy Rectangle), w którym mają zostać wygenerowane punkty.
+
+  - raw: określa czy zwracana lista ma zawierać obiekty klasy Point (False) lub listy współrzędnych punktów (True).
+
+  - mu: wartość oczekiwana rozkładu normalnego, w przypadku None wartość oczekiwana jest wyznaczana jako środek prostokąta. Musi być listą o takiej samej długości jak wymiary prostokąta.
+
+  - sigma: odchylenie standardowe rozkładu normalnego, w przypadku None odchylenie standardowe jest wyznaczane jako 1/6 długości boku prostokąta. Przy dużych wartościach sigma punkty mogą znajdować się poza prostokątem. Musi być listą o takiej samej długości jak wymiary prostokąta.
+
+  - RESULT: lista punktów (obiektów klasy Point) lub lista list punktów (obiektów klasy Point) w zależności od wartości parametru raw.
+
+  Wywołuje ValueError("quantity must be positive") jeśli quantity jest mniejsze od 0.
+
+  Wywołuje ValueError("The rectanangle is not a Rectangle object.") jeśli rectangle nie jest obiektem klasy Rectangle.
+
+  Wywołuje ValueError("mu must be list") jeśli mu nie jest listą.
+
+  Wywołuje ValueError("mu must have the same dimensionality as rectangle") jeśli wymiary mu nie są równe wymiarom prostokąta.
+
+  Wywołuje ValueError("sigma must be list") jeśli sigma nie jest listą.
+
+  Wywołuje ValueError("sigma must have the same dimensionality as rectangle") jeśli wymiary sigma nie są równe wymiarom prostokąta.
+
+  \item \textbf{grid\_distribution(self, columns, rows, rectangle, raw=True)}:
+  Generuje równo rozłożone punkty w siatce wewnątrz prostokąta.
+
+  - columns: liczba kolumn siatki.
+
+  - rows: liczba wierszy siatki.
+
+  - rectangle: prostokąt (obiekt klasy Rectangle), w którym mają zostać wygenerowane punkty.
+
+  - raw: określa czy zwracana lista ma zawierać obiekty klasy Point (False) lub listy współrzędnych punktów (True).
+
+  - RESULT: lista punktów (obiektów klasy Point) lub lista list punktów (obiektów klasy Point) w zależności od wartości parametru raw.
+
+  Wywołuje ValueError("columns must be positive") jeśli columns jest mniejsze od 0.
+
+  Wywołuje ValueError("rows must be positive") jeśli rows jest mniejsze od 0.
+
+  Wywołuje ValueError("The rectanangle is not a Rectangle object.") jeśli rectangle nie jest obiektem klasy Rectangle.
+
+  \item \textbf{cluster\_distribution(self, quantity, clusters, raw=True)}:
+  Generuje punkty w klastrach wewnątrz prostokąta.
+
+  - quantity: liczba punktów do wygenerowania w każdym klastrze.
+
+  - clusters: lista prostokątów (obiektów klasy Rectangle), w których mają zostać wygenerowane punkty.
+
+  - raw: określa czy zwracana lista ma zawierać obiekty klasy Point (False) lub listy współrzędnych punktów (True).
+
+  - RESULT: lista punktów (obiektów klasy Point) lub lista list punktów (obiektów klasy Point) w zależności od wartości parametru raw.
+
+  Wywołuje ValueError("quantity must be positive") jeśli quantity jest mniejsze od 0.
+
+  Wywołuje ValueError("The rectanangle is not a Rectangle object.") jeśli element listy clusters nie jest obiektem klasy Rectangle.
+
+  \item \textbf{outliers\_distribution(self, quantity, outliers, rectangle, raw=True)}:
+  Generuje punkty wewnątrz prostokąta wraz z punktami odstającymi. Punkty są generowane w środku dwukrotnie mniejszego prostokąta przy zachowaniu tego samego punktu centralnego, a punkty odstające na przestrzeni całego prostokąta.
+
+  - quantity: liczba punktów do wygenerowania.
+
+  - outliers: liczba punktów odstających do wygenerowania.
+
+  - rectangle: prostokąt (obiekt klasy Rectangle), w którym mają zostać wygenerowane punkty.
+
+  - raw: określa czy zwracana lista ma zawierać obiekty klasy Point (False) lub listy współrzędnych punktów (True).
+
+  - RESULT: lista punktów (obiektów klasy Point) lub lista list punktów (obiektów klasy Point) w zależności od wartości parametru raw.
+
+  Wywołuje ValueError("quantity must be positive") jeśli quantity jest mniejsze od 0.
+
+  Wywołuje ValueError("outliers must be positive") jeśli outliers jest mniejsze od 0.
+
+  Wywołuje ValueError("The rectanangle is not a Rectangle object.") jeśli rectangle nie jest obiektem klasy Rectangle.
+
+  \item \textbf{cross\_distribution(self, vertical, horizontal, rectangle, raw=True)}:
+  Generuje punkty wewnątrz prostokąta na jego osiach symetrii względem jego boków.
+
+  - vertical: liczba punktów do wygenerowania na osi pionowej.
+
+  - horizontal: liczba punktów do wygenerowania na osi poziomej.
+
+  - rectangle: prostokąt (obiekt klasy Rectangle), w którym mają zostać wygenerowane punkty.
+
+  - raw: określa czy zwracana lista ma zawierać obiekty klasy Point (False) lub listy współrzędnych punktów (True).
+
+  - RESULT: lista punktów (obiektów klasy Point) lub lista list punktów (obiektów klasy Point) w zależności od wartości parametru raw.
+
+  Wywołuje ValueError("vertical must be positive") jeśli vertical jest mniejsze od 0.
+
+  Wywołuje ValueError("horizontal must be positive") jeśli horizontal jest mniejsze od 0.
+
+  Wywołuje ValueError("The rectanangle is not a Rectangle object.") jeśli rectangle nie jest obiektem klasy Rectangle.
+
+  \item \textbf{rectangle\_distribution(self, quantity, rectangle, raw=True)}:
+  Generuje punkty na bokach prostokąta.
+
+  - quantity: liczba punktów do wygenerowania.
+
+  - rectangle: prostokąt (obiekt klasy Rectangle), w którego bokach mają zostać wygenerowane punkty.
+
+  - raw: określa czy zwracana lista ma zawierać obiekty klasy Point (False) lub listy współrzędnych punktów (True).
+
+  - RESULT: lista punktów (obiektów klasy Point) lub lista list punktów (obiektów klasy Point) w zależności od wartości parametru raw.
+
+  Wywołuje ValueError("quantity must be positive") jeśli quantity jest mniejsze od 0.
+
+  Wywołuje ValueError("The rectanangle is not a Rectangle object.") jeśli rectangle nie jest obiektem klasy Rectangle.
+\end{itemize}
+
+\subsection{Comparision}
+Jupyter Notebook zawierający porównanie wydajności struktur QuadTree i KdTree wraz z generacją wykresów. Składa się z czterech części:
+\begin{itemize}
+  \item \textbf{Sprawozdanie poprawności działania porównywanych struktur}:
+  Sprawdzenie poprawności działania struktur QuadTree i KdTree za pomocą testów jednostkowych z modułu Tests.
+  \item \textbf{Pomiary wydajności struktur QuadTree i KdTree dla różnych danych wejściowych oraz ich rozmiaru}:
+  Pomiar czasu działania struktur QuadTree i KdTree dla różnych danych wejściowych wygenerowanych za pomocą CaseGenerator.
+  \item \textbf{Generowanie wykresów}:
+  Generowanie wykresów na podstawie danych z poprzedniej części.
+  \item \textbf{Pomiary dla indywidualnych przypadków pod zastosowania drzewa}:
+  Wykorzystanie drzew pod względem ich unikalnych możliwości.
+\end{itemize}
+
 \section{Tests}
-...
+Moduł zawiera testy jednostkowe dla struktur QuadTree i KdTree.
+\subsection{TestManager}
+Klasa zawierająca testy jednostkowe dla struktur QuadTree i KdTree.
+\begin{itemize}
+  \item \textbf{TestManager(tree)}:
+  Konstruktor klasy TestManager.
+
+  - tree: drzewo (obiekt klasy QuadTree lub KdTree), które ma zostać przetestowane.
+
+  \item \textbf{all\_tests(self)}:
+  Wykonuje wszystkie testy jednostkowe zawarte w klasie TestManager. Przebieg jest wyświetlany w konsoli.
+
+  - RESULT: True jeśli wszystkie testy zakończyły się sukcesem, False w przeciwnym wypadku.
+
+  \item \textbf{contain\_point\_int(self)}:
+  Testuje metodę if\_contains dla punktów całkowitoliczbowych. Przebieg jest wyświetlany w konsoli.
+
+  - RESULT: krotka (good, all), gdzie good to liczba testów zakończonych sukcesem, a all to liczba wszystkich testów.
+
+  \item \textbf{contain\_point\_float(self)}:
+  Testuje metodę if\_contains dla punktów zmiennoprzecinkowych. Przebieg jest wyświetlany w konsoli.
+
+  - RESULT: krotka (good, all), gdzie good to liczba testów zakończonych sukcesem, a all to liczba wszystkich testów.
+
+  \item \textbf{search\_in\_rectangle\_int(self)}:
+  Testuje metodę search\_in\_rectangle dla punktów całkowitoliczbowych. Przebieg jest wyświetlany w konsoli.
+
+  - RESULT: krotka (good, all), gdzie good to liczba testów zakończonych sukcesem, a all to liczba wszystkich testów.
+
+  \item \textbf{search\_in\_rectangle\_float(self)}:
+  Testuje metodę search\_in\_rectangle dla punktów zmiennoprzecinkowych. Przebieg jest wyświetlany w konsoli.
+
+  - RESULT: krotka (good, all), gdzie good to liczba testów zakończonych sukcesem, a all to liczba wszystkich testów.
+\end{itemize}
+
 \section{Visualizer}
-...
+Moduł zawiera narzędzie do wizualizacji oraz przykładowe wizualizacje.
+Narzędzie pochodzi z repozytorium dostarczonego przez KN AGH BIT, link do repozytorium znajduje się w bibliografii.
+\subsection{main.py}
+Plik zawiera implementację klasy Visualizer, która umożliwia wizualizacje. Został oparty na możliwościach biblioteki matplotlib.
+\begin{itemize}
+  \item \textbf{Visualizer()}:
+  Konstruktor klasy Visualizer.
+
+  \item \textbf{add\_title(self, title)}:
+  Dodaje tytuł wykresu.
+
+  - title: tytuł wykresu.
+
+  \item \textbf{add\_grid(self)}:
+  Dodaje siatkę do wykresu.
+
+  \item \textbf{add\_point(self, data, **kwargs)}:
+  Dodaje punkt do wykresu.
+
+  - data: punkt (obiekt iterowalny) który ma zostać dodany do wykresu.
+
+  - kwargs: dodatkowe argumenty, które zostaną przekazane do funkcji matplotlib.pyplot.plot.
+
+  - RESULT: obiekt klasy figure, który został dodany do wykresu.
+
+  \item \textbf{add\_line\_segment(self, data, **kwargs)}:
+  Dodaje odcinek do wykresu.
+
+  - data: odcinek który ma zostać dodany do wykresu.
+
+  - kwargs: dodatkowe argumenty, które zostaną przekazane do funkcji matplotlib.pyplot.plot.
+
+  - RESULT: obiekt klasy figure, który został dodany do wykresu.
+
+  \item \textbf{add\_circle(self, data, **kwargs)}:
+  Dodaje okrąg do wykresu.
+
+  - data: okrąg który ma zostać dodany do wykresu.
+
+  - kwargs: dodatkowe argumenty, które zostaną przekazane do funkcji matplotlib.pyplot.plot.
+
+  - RESULT: obiekt klasy figure, który został dodany do wykresu.
+
+  \item \textbf{add\_polygon(self, data, **kwargs)}:
+  Dodaje wielokąt do wykresu.
+
+  - data: wielokąt który ma zostać dodany do wykresu.
+
+  - kwargs: dodatkowe argumenty, które zostaną przekazane do funkcji matplotlib.pyplot.plot.
+
+  - RESULT: obiekt klasy figure, który został dodany do wykresu.
+
+  \item \textbf{add\_line(self, data, **kwargs)}:
+  Dodaje prostą do wykresu.
+
+  - data: prosta która ma zostać dodana do wykresu.
+
+  - kwargs: dodatkowe argumenty, które zostaną przekazane do funkcji matplotlib.pyplot.plot.
+
+  - RESULT: obiekt klasy figure, który został dodany do wykresu.
+
+  \item \textbf{add\_half\_line(self, data, **kwargs)}:
+  Dodaje półprostą do wykresu.
+
+  - data: półprosta która ma zostać dodana do wykresu.
+
+  - kwargs: dodatkowe argumenty, które zostaną przekazane do funkcji matplotlib.pyplot.plot.
+
+  - RESULT: obiekt klasy figure, który został dodany do wykresu.
+
+  \item \textbf{remove\_figure(self, figure)}:
+  Usuwa figurę z wykresu.
+  
+  - figure: figura (obiekt klasy figure), która ma zostać usunięta z wykresu.
+
+  \item \textbf{clear(self)}:
+  Usuwa wszystkie figury z wykresu.
+
+  \item \textbf{show(self)}:
+  Wyświetla wykres.
+
+  \item \textbf{save(self, filename='plot')}:
+  Zapisuje wykres do pliku.
+
+  - filename: nazwa pliku, w którym ma zostać zapisany wykres.
+
+  \item \textbf{show\_gif(self, interval=256)}:
+  Wyświetla animację wykresu.
+
+  - interval: czas trwania jednej klatki animacji w milisekundach.
+
+  - RESULT: obiekt klasy Image, który został wyświetlony.
+
+  \item \textbf{save\_gif(self, filename='animation', interval=256)}:
+  Zapisuje animację wykresu do pliku.
+
+  - filename: nazwa pliku, w którym ma zostać zapisana animacja.
+
+  - interval: czas trwania jednej klatki animacji w milisekundach.
+
+  - RESULT: obiekt klasy Image, który został zapisany.
+\end{itemize}
+
+\subsection{demo.ipynb}
+Plik Jupyter Notebook, który zawiera przykładowe wykorzystanie klasy Visualizer.
 
 \part{Instrukcja}
 \section{Testy}
-...
+
+\begin{lstlisting}[
+    style=vscode-darkplus-python,
+    caption={Your caption.},
+    label=lst:python_code,
+    captionpos=b
+]
+def hello_world():
+    # This is a comment
+    print("Hello, world!")
+
+# Call the function
+hello_world()
+\end{lstlisting}
+
 \section{Wizualizacja}
 ...
 
@@ -327,5 +770,17 @@ Reprezentacja niemutowalnego prostokąta o dodatniej liczbie wymiarów, zapisane
 ...chodzi o kdtree (k-dimension tree)
 \section{Podsumowanie}
 ...
+
+\newpage
+\section{Bibliografia}
+\begin{itemize}
+  \item Wykłady z Algorytmów Geometrycznych na 3 semestrze Informatyki AGH WI, prowadzone przez dr inż. Barbarę Głut.
+  \item \url{https://github.com/aghbit/Algorytmy-Geometryczne}
+  \item \url{https://en.wikipedia.org/wiki/Quadtree}
+  \item \url{https://en.wikipedia.org/wiki/K-d_tree}
+  \item \url{https://en.wikipedia.org/wiki/Nearest_neighbor_search}
+  \item \url{https://en.wikipedia.org/wiki/Range_searching}
+  \item \url{https://www.agh.edu.pl/o-agh/multimedia/znak-graficzny-agh/}
+\end{itemize}
 
 \end{document}
