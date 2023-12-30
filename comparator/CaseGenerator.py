@@ -54,7 +54,7 @@ class CaseGenerator:
 
     def cluster_distribution(self, quantity, clusters, raw=True):
         """
-        quanity - number of points in each cluster
+        quantity - number of points in each cluster
         """
         self.check_quantity(quantity)
         for cluster in clusters:
