@@ -875,35 +875,83 @@ Plik zawiera implementację klasy Visualizer, która umożliwia wizualizacje. Zo
 Plik Jupyter Notebook, który zawiera przykładowe wykorzystanie klasy Visualizer.
 
 \part{Instrukcja korzystania z programu}
+\section{Utilities}
+\subsection{Point}
+
+
 \section{QuadTree}
 \subsection{Tworzenie drzewa}
 Aby utworzyć drzewo należy utworzyć obiekt klasy QuadTree, który przyjmuje listę punktów (obiektów klasy Point lub obiektów iterowalnych) jako argument.
 \begin{lstlisting}[
   style=vscode-darkplus-python,
-  caption={Your caption.},
+  caption={Konstruktor klasy QuadTree.},
   label=lst:python_code,
   captionpos=b
 ]
 from quadtree import QuadTree
 
-points = [[1, 2], [3, 4], [5, 6]]
-tree = QuadTree(points)
+points1 = [[1, 2], [3, 4], [5, 6]]
+Qtree1 = QuadTree(points1, TODO)
+points2 = [Point([1, 2]), Point([3, 4])]
+Qtree2 = QuadTree(points2, TODO)
+points3 = [[-1, 2.23], Point([3.3, -4]), [7.3, 43.212]]
+Qtree3 = QuadTree(points3, TODO)
+# ValueError: The list of points is empty.
+Qtree4 = QuadTree([]) # ValueError
+# ValueError: The points have different dimensions.
+Qtree5 = QuadTree([[1, 2], [3, 4.3, -5]]) # ValueError
 \end{lstlisting}
-\section{Testy}
+
+\subsection{Wyszukiwanie punktu}
+Aby sprawdzić czy drzewo zawiera punkt należy wywołać metodę if\_contains, która przyjmuje punkt (obiekt klasy Point lub obiekt iterowalny) jako argument.
 
 \begin{lstlisting}[
-    style=vscode-darkplus-python,
-    caption={Your caption.},
-    label=lst:python_code,
-    captionpos=b
+  style=vscode-darkplus-python,
+  caption={Sprawdzenie czy drzewo zawiera punkt.},
+  label=lst:python_code,
+  captionpos=b
 ]
-def hello_world():
-    # This is a comment
-    print("Hello, world!")
+from quadtree import QuadTree
 
-# Call the function
-hello_world()
+qtree = QuadTree([[1, -2.2], [3.6, 4], Point([5, 6])])
+qtree.if_contains([1, -2.2])         # True
+qtree.if_contains([1, 2])            # False
+qtree.if_contains(Point([3.6, 4]))   # True
+qtree.if_contains(Point([3.6, 4.1])) # False
+# ValueError: The point has different dimension than 2.
+qtree.if_contains([1, 2, 3])         # ValueError
 \end{lstlisting}
+
+\subsection{Wyszukiwanie punktów w prostokącie}
+Aby wyszukać punkty znajdujące się w prostokącie należy wywołać metodę search\_in\_rectangle, która przyjmuje prostokąt (obiekt klasy Rectangle) jako argument.
+\begin{lstlisting}[
+  style=vscode-darkplus-python,
+  caption={Wyszukiwanie punktów w prostokącie.},
+  label=lst:python_code,
+  captionpos=b
+]
+from quadtree import QuadTree
+
+qtree = QuadTree([[1, -2.2], [3.6, 4], Point([5, 6])])
+qtree.search_in_rectangle(Rectangle([0, 0], [2, 2]), raw=False) # [Point([1, -2.2])]
+qtree.search_in_rectangle(Rectangle([0, 0], [3, 4]), raw=True)  # [[1, -2.2]]
+qtree.search_in_rectangle(Rectangle([6, 8], [9, 9]), raw=False) # []
+# ValueError: The rectanangle is not a Rectangle object.
+qtree.search_in_rectangle([0, 0, 2, 2])                         # ValueError
+# ValueError: The rectangle has different dimension than 2.
+qtree.search_in_rectangle(Rectangle([0, 0, 4], [2, 2, 3]))      # ValueError
+\end{lstlisting}
+
+\section{KdTree}
+\subsection{Tworzenie drzewa}
+...
+\subsection{Wyszukiwanie punktu}
+...
+\subsection{Wyszukiwanie punktów w prostokącie}
+...
+
+\section{Testy}
+...
 
 \section{Wizualizacja}
 ...
