@@ -20,7 +20,9 @@ class KdTree:
             raise ValueError("The point has different dimension than the points in the tree.")
         if not isinstance(point, Point):
             point = Point(point)
-        return self._root._if_contains(point)
+        if self._root._rectangle.contains(point):
+            return self._root._if_contains(point)
+        return False
     
     # find all points in the given rectangle
     def search_in_rectangle(self, rectangle, raw=False):
@@ -28,7 +30,10 @@ class KdTree:
             raise ValueError("The rectangle is not a Rectangle object.")
         if len(rectangle) != self._dimension:
             raise ValueError("The rectangle has different dimension than the points in the tree.")
-        result = self._root._search_rectangle(rectangle, self._points_in_node)
+        area = rectangle.intersection(self._root._rectangle)
+        if area is None:
+            return []
+        result = self._root._search_rectangle(area, self._points_in_node)
         if raw:
             return [point.point for point in result]
         return result
