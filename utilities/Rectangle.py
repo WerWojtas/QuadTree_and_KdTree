@@ -14,6 +14,7 @@ class Rectangle:
             raise ValueError("LowerLeft point must precede the UpperRight point")
         self._lowerleft = lowerleft
         self._upperright = upperright
+        self._center = Point([(lowerleft[i] + upperright[i]) / 2 for i in range(len(lowerleft))])
 
     def __eq__(self, other):
         if not isinstance(other, Rectangle):
