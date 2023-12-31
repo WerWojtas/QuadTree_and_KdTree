@@ -106,30 +106,30 @@ class KdTree_visualizer:
         self._dimension = len(points[0])
 
     # check if the tree contains the point
-    def if_contains(self, point):
+    def if_contains(self, point, title="KdTree", filename="KdTree-contains"):
         if len(point) != self._dimension:
             raise ValueError("The point has different dimension than the points in the tree.")
         if not isinstance(point, Point):
             point = Point(point)
         vis = deepcopy(self.vis)
-        vis.add_title("KdTree")
+        vis.add_title(title)
         vis.add_point([(p.point) for p in self.points])
         result = self._root._if_contains(point, vis)
-        vis.save_gif(filename="KdTree-contain", interval=300)
+        vis.save_gif(filename=filename)
         return result
     
     # find all points in the given rectangle
-    def search_in_rectangle(self, rectangle, raw=False):
+    def search_in_rectangle(self, rectangle, raw=False, title="KdTree", filename="KdTree-search"):
         if not isinstance(rectangle, Rectangle):
             raise ValueError("The rectangle is not a Rectangle object.")
         if len(rectangle) != self._dimension:
             raise ValueError("The rectangle has different dimension than the points in the tree.")
         vis = deepcopy(self.vis)
-        vis.add_title("KdTree")
+        vis.add_title(title)
         vis.add_polygon(rectangle.vertices2D(), color="orange", alpha=0.3)
         vis.add_point([(p.point) for p in self.points])
         result = self._root._search_rectangle(rectangle, vis, self._points_in_node)
-        vis.save_gif(filename="KdTree-search", interval=500)
+        vis.save_gif(filename=filename)
         if raw:
             return [point.point for point in result]
         return result

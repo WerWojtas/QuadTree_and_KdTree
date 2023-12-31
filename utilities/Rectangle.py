@@ -120,6 +120,7 @@ class Rectangle:
         ur = self.upperright.minimum(other.upperright)
         return Rectangle(ll, ur)
     
+    @property
     def vertices2D(self):
         """
         Compute the vertices of the 2D rectangle
