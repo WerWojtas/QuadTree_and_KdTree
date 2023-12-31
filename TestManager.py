@@ -5,7 +5,6 @@ from tests.test_CaseGenerator import TestCaseGenerator
 from tests.test_KdTree import TestKdTree
 from tests.test_Rectangle import TestRectangle
 from tests.test_Point import TestPoint
-from KdTree import KdTree
 
 class TestManager:
     def __init__(self, tree):
@@ -133,6 +132,3 @@ class TestManager:
             if i not in act:
                 return False
         return True
-
-tm = TestManager(KdTree)
-tm.all_tests()

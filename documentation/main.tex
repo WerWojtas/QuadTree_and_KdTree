@@ -166,7 +166,7 @@ Projekt został zaimplementowany w języku Python 3.9 z wykorzystaniem aplikacji
 \hline
  & Komputer 1 & Komputer 2 \\
 \hline
-Procesor & Intel(R) Core(TM) I5-10300H @ 2.50GHz 2.50GHz & Intel(R) Core(TM) I3-1115G4 @ 3.00GHz 2.90GHz \\
+Procesor & Intel(R) Core(TM) I5-10300H 2.50GHz & Intel(R) Core(TM) I3-1115G4 3.00GHz \\
 \hline
 System operacyjny & Microsoft Windows 10 64bit ver 22H2 & Microsoft Windows 11 Home 64bit ver 22H2 \\
 \hline
@@ -179,6 +179,7 @@ Program składa się z następujących plików:
 \begin{itemize}
     \item KdTree.py
     \item QuadTree.py
+    \item TestManager.py
     \item Comparision.ipynb
     \item visualizer/
     \item utilities/
@@ -733,9 +734,9 @@ Jupyter Notebook zawierający porównanie wydajności struktur QuadTree i KdTree
 \end{itemize}
 
 \section{Tests}
-Moduł zawiera testy jednostkowe dla struktur QuadTree i KdTree.
+Moduł zawiera testy integracyjne dla struktur QuadTree, KdTree oraz jednostkowe wszystkich komponentów.
 \subsection{TestManager}
-Klasa zawierająca testy jednostkowe dla struktur QuadTree i KdTree.
+Klasa zawierająca testy integracyjne dla struktur QuadTree i KdTree.
 \begin{itemize}
   \item \textbf{TestManager(tree)}:
   Konstruktor klasy TestManager.
@@ -743,7 +744,7 @@ Klasa zawierająca testy jednostkowe dla struktur QuadTree i KdTree.
   - tree: drzewo (obiekt klasy QuadTree lub KdTree), które ma zostać przetestowane.
 
   \item \textbf{all\_tests(self)}:
-  Wykonuje wszystkie testy jednostkowe zawarte w klasie TestManager. Przebieg jest wyświetlany w konsoli.
+  Wykonuje wszystkie testy jednostkowe i integracyjne zawarte w klasie TestManager. Przebieg jest wyświetlany w konsoli.
 
   - RESULT: True jeśli wszystkie testy zakończyły się sukcesem, False w przeciwnym wypadku.
 
@@ -1066,6 +1067,7 @@ ktree.search_in_rectangle(Rectangle([0, 0], [2, 2]))  # []
 ktree.search_in_rectangle([0, 0, 2, 2])                           # ValueError
 # ValueError: The rectangle has different dimension than the points in the tree.
 ktree.search_in_rectangle(Rectangle([0, 0, 4], [2, 2, 3]))        # ValueError
+\end{lstlisting}
 
 \section{QuadTree_visualizer}
 Klasa umożliwiająca wizualizację drzewa QuadTree.
@@ -1162,18 +1164,27 @@ Ktree1.search_in_rectangle(Rectangle([0, 0], [2, 2]), title='KdTree', filename='
 \end{lstlisting}
 
 \section{Testy}
-
+Aby przetestować strukturę należy utworzyć obiekt klasy TestManager, który przyjmuje drzewo (obiekt klasy QuadTree lub KdTree) jako argument, a następnie uruchomić interesujące nas funkcje. Rezultat testów jest wyświetlany w konsoli.
+\begin{lstlisting}[
+  style=vscode-darkplus-python,
+  caption={Testy integracyjne.},
+  label=lst:python_code,
+  captionpos=b
+]
+testman1 = TestManager(QuadTree)
+testman2 = TestManager(KdTree)
+testman1.all_tests()                 # wykonuje wszystkie testy jednostkowe i integracyjne
+testman1.contain_point_int()         # wykonuje testy dla punktów całkowitoliczbowych
+testman2.contain_point_float()       # wykonuje testy dla punktów zmiennoprzecinkowych
+testman2.search_in_rectangle_int()   # wykonuje testy dla punktów całkowitoliczbowych
+testman2.search_in_rectangle_float() # wykonuje testy dla punktów zmiennoprzecinkowych
+\end{lstlisting}
 
 \section{Wizualizacja}
-...
+Przykładowe wizualizacje znajdują się w pliku $visualizer/demo.ipynb$.
 
-
-
-
-
-
-
-
+\section{Porównanie}
+Porównanie wydajności struktur QuadTree i KdTree znajduje się w pliku $Comparision.ipynb$, wraz z generacją wykresów oraz opisem.
 
 \part{Sprawozdanie}
 \section{Wstęp teoretyczny}
@@ -1193,6 +1204,10 @@ Ktree1.search_in_rectangle(Rectangle([0, 0], [2, 2]), title='KdTree', filename='
 
 \newpage
 \section{Bibliografia}
+\begin{itemize}
+  \item QuadTree - Weronika Wojtas
+  \item KdTree - Radosław Rolka
+\end{itemize}
 \begin{itemize}
   \item Wykłady z Algorytmów Geometrycznych na 3 semestrze Informatyki AGH WI, prowadzone przez dr inż. Barbarę Głut.
   \item \url{https://github.com/aghbit/Algorytmy-Geometryczne}
