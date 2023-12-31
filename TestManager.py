@@ -21,9 +21,17 @@ class TestManager:
             g, a = test()
             good += g
             all += a
-        print(f"Passed {good}/{all} of all self tests.")
+        print(f"Passed {good}/{all} of all tests.")
+        return good == all
+    
+    def all_unittests(self):
         print("Running all unittests:")
-        return unittest.main()
+        suite = unittest.TestSuite()
+        suite.addTest(unittest.makeSuite(TestKdTree))
+        suite.addTest(unittest.makeSuite(TestRectangle))
+        suite.addTest(unittest.makeSuite(TestPoint))
+        runner = unittest.TextTestRunner()
+        runner.run(suite)
     
     def contain_point_int(self):
         print("Test contain_point_int:")
