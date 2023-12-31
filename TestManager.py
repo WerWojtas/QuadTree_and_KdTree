@@ -1,5 +1,11 @@
+import unittest
 from utilities.Rectangle import Rectangle
 from utilities.Point import Point
+from tests.test_CaseGenerator import TestCaseGenerator
+from tests.test_KdTree import TestKdTree
+from tests.test_Rectangle import TestRectangle
+from tests.test_Point import TestPoint
+from KdTree import KdTree
 
 class TestManager:
     def __init__(self, tree):
@@ -10,14 +16,15 @@ class TestManager:
         self.mytree = tree
 
     def all_tests(self):
+        print("Running all tests:")
         good = all = 0
-        print("Running tests:")
         for test in self._tests:
             g, a = test()
             good += g
             all += a
-        print(f"Passed {good}/{all} of all tests.")
-        return good == all
+        print(f"Passed {good}/{all} of all self tests.")
+        print("Running all unittests:")
+        return unittest.main()
     
     def contain_point_int(self):
         print("Test contain_point_int:")
@@ -126,3 +133,6 @@ class TestManager:
             if i not in act:
                 return False
         return True
+
+tm = TestManager(KdTree)
+tm.all_tests()
