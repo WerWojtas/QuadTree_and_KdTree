@@ -42,7 +42,11 @@ class CaseGenerator:
             return   [[random.gauss(mu[i], sigma[i]) for i in range(len(rectangle))]  for _ in range(quantity)]
         return [Point([random.gauss(mu[i], sigma[i]) for i in range(len(rectangle))]) for _ in range(quantity)]
 
-    def grid_distribution(self, columns, rows, rectangle, raw=True):
+    def grid_distribution(self, quantity, rectangle, raw=True):
+        if len(quantity) != 2:
+            raise ValueError("Quantity should be a tuple of (columns, rows)")
+        columns = quantity[0]
+        rows = quantity[1]
         self.check_quantity(columns, "columns")
         self.check_quantity(rows, "rows")
         self.check_rectangle(rectangle, must2d=True)
@@ -72,7 +76,9 @@ class CaseGenerator:
         small_rect = Rectangle((rectangle.lowerleft[0] + hstep, rectangle.lowerleft[1] + vstep), (rectangle.upperright[0] - hstep, rectangle.upperright[1] - vstep))
         return self.uniform_distribution(quantity, small_rect, raw) + self.uniform_distribution(outliers, rectangle, raw)
 
-    def cross_distribution(self, vertical, horizontal, rectangle, raw=True):
+    def cross_distribution(self,quantity,rectangle, raw=True):
+        vertical = quantity[0]
+        horizontal = quantity[1]
         self.check_quantity(vertical, "vertical")
         self.check_quantity(horizontal, "horizontal")
         self.check_rectangle(rectangle)
