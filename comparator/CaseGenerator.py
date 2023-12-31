@@ -76,7 +76,9 @@ class CaseGenerator:
         small_rect = Rectangle((rectangle.lowerleft[0] + hstep, rectangle.lowerleft[1] + vstep), (rectangle.upperright[0] - hstep, rectangle.upperright[1] - vstep))
         return self.uniform_distribution(quantity, small_rect, raw) + self.uniform_distribution(outliers, rectangle, raw)
 
-    def cross_distribution(self,quantity,rectangle, raw=True):
+    def cross_distribution(self, quantity, rectangle, raw=True):
+        if len(quantity) != 2:
+            raise ValueError("Quantity should be a tuple of (vertical, horizontal)")
         vertical = quantity[0]
         horizontal = quantity[1]
         self.check_quantity(vertical, "vertical")
