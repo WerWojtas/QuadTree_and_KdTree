@@ -153,6 +153,7 @@ Projekt został zaimplementowany w języku Python 3.9 z wykorzystaniem aplikacji
     \item pandas >= 2.0.3
     \item matplotlib >= 3.7.2
     \item notebook >= 6.5.4
+    \item unittest (Python Standard Library)
     \item functools (Python Standard Library)
     \item math (Python Standard Library)
     \item copy (Python Standard Library)
@@ -877,7 +878,74 @@ Plik Jupyter Notebook, który zawiera przykładowe wykorzystanie klasy Visualize
 \part{Instrukcja korzystania z programu}
 \section{Utilities}
 \subsection{Point}
+Aby utworzyć punkt należy utworzyć obiekt klasy Point, który przyjmuje listę współrzędnych jako argument.
+\begin{lstlisting}[
+  style=vscode-darkplus-python,
+  caption={Konstruktor klasy Point.},
+  label=lst:python_code,
+  captionpos=b
+]
+from utilities.point import Point
 
+point1 = Point([1, -2])
+point2 = Point([3.4, -4, 5])
+# ValueError: The point must have at least one dimension.
+point3 = Point([]) # ValueError
+\end{lstlisting}
+Na obiekcie klasy Point można wykonywać różne operacje. Gdy do wykonania operacji wymagany jest inny punkt, to musi mieć on taki sam wymiar jak punkt na którym wykonywana jest operacja.
+\begin{lstlisting}[
+  style=vscode-darkplus-python,
+  caption={Operacje arytmetyczne na obiekcie klasy Point.},
+  label=lst:python_code,
+  captionpos=b
+]
+point1 = Point([1, -2])
+point2 = Point([3.4, 5])
+point3 = Point([3.4, -4, 5])
+
+len(point1)             # 2
+point3[2]               # 5
+point2.y                # 5
+point1.precedes(point2) # True
+# ValueErorr: The points have different dimensions.
+point1.maximum(point3)  # ValueError
+\end{lstlisting}
+
+\subsection{Rectangle}
+Aby utworzyć prostokąt należy utworzyć obiekt klasy Rectangle, który przyjmuje dwa punkty (obiekty klasy Point lub obiekty iterowalne) jako argumenty.
+\begin{lstlisting}[
+  style=vscode-darkplus-python,
+  caption={Konstruktor klasy Rectangle.},
+  label=lst:python_code,
+  captionpos=b
+]
+from utilities.rectangle import Rectangle
+
+rectangle1 = Rectangle([1, -2], [7.4, 5])
+rectangle2 = Rectangle(Point([1, -2]), Point([3.2, 5]))
+rectangle3 = Rectangle([1, -2], Point([3.4, 6]))
+# ValueError: The points have different dimensions.
+rectangle4 = Rectangle([1, -2], [3.4, 6, 7]) # ValueError
+# ValueError: LowerLeft point must precede the UpperRight point.
+rectangle5 = Rectangle([3.4, 6], [1, -2])    # ValueError
+\end{lstlisting}
+
+Przykładowe operacje z wykorzystaniem obiektu klasy Rectangle.
+
+\begin{lstlisting}[
+  style=vscode-darkplus-python,
+  caption={Operacje na obiekcie klasy Rectangle.},
+  label=lst:python_code,
+  captionpos=b
+]
+rectangle1 = Rectangle([1, -2], [7.4, 5])
+rectangle2 = Rectangle(Point([1, -2.3]), Point([3.2, 5]))
+
+rectangle1.lowerleft # Point([1, -2])
+rectangle1.upperright # Point([7.4, 5])
+Rectangle.from_points([2, 0.3], [9, 5]) # Rectangle([2, 0.3], [9, 5])
+rectangle1.divide(0, 3) # [Rectangle([1, -2], [3, 5]), Rectangle([3, -2], [7.4, 5])]
+rectanangle2.vertices # [Point([1, -2.3]), Point([3.2, -2.3]), Point([3.2, 5]), Point([1, 5])]
 
 \section{QuadTree}
 \subsection{Tworzenie drzewa}
@@ -944,17 +1012,168 @@ qtree.search_in_rectangle(Rectangle([0, 0, 4], [2, 2, 3]))      # ValueError
 
 \section{KdTree}
 \subsection{Tworzenie drzewa}
-...
+Aby utworzyć drzewo należy utworzyć obiekt klasy KdTree, który przyjmuje listę punktów (obiektów klasy Point lub obiektów iterowalnych) jako argument.
+\begin{lstlisting}[
+  style=vscode-darkplus-python,
+  caption={Konstruktor klasy KdTree.},
+  label=lst:python_code,
+  captionpos=b
+]
+from kdtree import KdTree
+
+points1 = [[1, 2], [3, 4], [5, 6]]
+Ktree1 = KdTree(points1)
+points2 = [Point([1, 2]), Point([3, 4])]
+Ktree2 = KdTree(points2)
+points3 = [[-1, 2.23, 5], Point([3.3, -4, 2]), [7.3, 43.212, 1]]
+Ktree3 = KdTree(points3)
+points4 = [[1, 2], [3, 4], [5, 6], [7, 8], [9, 10]]
+Ktree4 = KdTree(points4, points_in_node=True)
+# ValueError: The list of points is empty.
+Ktree4 = KdTree([]) # ValueError
+# ValueError: The points have different dimensions.
+Ktree5 = KdTree([[1, 2], [3, 4.3, -5]]) # ValueError
+\end{lstlisting}
+
 \subsection{Wyszukiwanie punktu}
-...
+Aby sprawdzić czy drzewo zawiera punkt należy wywołać metodę if\_contains, która przyjmuje punkt (obiekt klasy Point lub obiekt iterowalny) jako argument.
+\begin{lstlisting}[
+  style=vscode-darkplus-python,
+  caption={Sprawdzenie czy drzewo zawiera punkt.},
+  label=lst:python_code,
+  captionpos=b
+]
+ktree = KdTree([[1, -2.2], [3.6, 4], Point([5, 6])])
+ktree.if_contains([1, -2.2])         # True
+ktree.if_contains([1, 2])            # False
+# ValueError: The point has different dimension than the points in the tree.
+ktree.if_contains([1, 2, 3])         # ValueError
+\end{lstlisting}
+
 \subsection{Wyszukiwanie punktów w prostokącie}
-...
+Aby wyszukać punkty znajdujące się w prostokącie należy wywołać metodę search\_in\_rectangle, która przyjmuje prostokąt (obiekt klasy Rectangle) jako argument.
+\begin{lstlisting}[
+  style=vscode-darkplus-python,
+  caption={Wyszukiwanie punktów w prostokącie.},
+  label=lst:python_code,
+  captionpos=b
+]
+ktree = KdTree([[1, -2.2], Point([3.6, 4]), [2, -6]])
+kdtree.search_in_rectangle(Rectangle([0, -3], [2, 2]), raw=False) # [Point([1, -2.2])]
+ktree.search_in_rectangle(Rectangle([0, -10], [3, 2]), raw=True)  # [[1, -2.2], [2, -6]]
+ktree.search_in_rectangle(Rectangle([0, 0], [2, 2]))  # []
+# ValueError: The rectanangle is not a Rectangle object.
+ktree.search_in_rectangle([0, 0, 2, 2])                           # ValueError
+# ValueError: The rectangle has different dimension than the points in the tree.
+ktree.search_in_rectangle(Rectangle([0, 0, 4], [2, 2, 3]))        # ValueError
+
+\section{QuadTree_visualizer}
+Klasa umożliwiająca wizualizację drzewa QuadTree.
+\subsection{Wizualizacja drzewa}
+Aby wizualizować drzewo należy utworzyć obiekt klasy QuadTree\_Visualizer, który przyjmuje listę punktów (obiektów klasy Point lub obiektów iterowalnych) jako argument oraz ewentualne modyfikatory. Zachowuje się tak jak wyżej opisana klasa QuadTree.
+\begin{lstlisting}[
+  style=vscode-darkplus-python,
+  caption={Konstruktor klasy QuadTree\_Visualizer.},
+  label=lst:python_code,
+  captionpos=b
+]
+from quadtree import QuadTree_Visualizer
+
+points1 = [[1, 2], [3, 4], [5, 6]]
+# w folderze zostanie utworzony plik quadtree.gif
+Qtree1 = QuadTree_Visualizer(points1, TODO, title='QuadTree', filename='quadtree')
+# w folderze zostanie utworzony plik quadtree-cons.gif
+Qtree1 = QuadTree_Visualizer(points1, TODO, title='QuadTree', filename='quadtree-cons')
+\end{lstlisting}
+
+\subsection{Wyszukiwanie punktu}
+Zachowuje się tak jak wyżej opisana klasa QuadTree, z tą różnicą, że zapisuje w gifie animację wyszukiwania punktu.
+\begin{lstlisting}[
+  style=vscode-darkplus-python,
+  caption={Wyszukiwanie punktu w QuadTree\_Visualizer.},
+  label=lst:python_code,
+  captionpos=b
+]
+points1 = [[1, 2.2], Point([3.1, 4]), [-0.5, 6]]
+Qtree1 = QuadTree_Visualizer(points1, TODO, title='QuadTree', filename='quadtree-contain')
+# w folderze zostanie utworzony plik quadtree-contain.gif
+Qtree1.if_contains([1, 2.2], title='QuadTree', filename='quadtree-contain')
+\end{lstlisting}
+
+\subsection{Wyszukiwanie punktów w prostokącie}
+Zachowuje się tak jak wyżej opisana klasa QuadTree, z tą różnicą, że zapisuje w gifie animację wyszukiwania punktów w prostokącie.
+\begin{lstlisting}[
+  style=vscode-darkplus-python,
+  caption={Wyszukiwanie punktów w prostokącie w QuadTree\_Visualizer.},
+  label=lst:python_code,
+  captionpos=b
+]
+points1 = [[1, 2.2], Point([3.1, 4]), [-0.5, 6]]
+Qtree1 = QuadTree_Visualizer(points1, TODO)
+# w folderze zostanie utworzony plik quadtree-search.gif
+Qtree1.search_in_rectangle(Rectangle([0, 0], [2, 2]), title='QuadTree', filename='quadtree-search')
+\end{lstlisting}
+
+\section{KdTree_visualizer}
+Klasa umożliwiająca wizualizację operacji drzewa KdTree.
+\subsection{Wizualizacja drzewa}
+Zachowuje się tak jak wyżej opisana klasa KdTree. Przy tworzeniu obiektu zapisuje w folderze plik kdtree.gif z animacją tworzenia drzewa.
+\begin{lstlisting}[
+  style=vscode-darkplus-python,
+  caption={Konstruktor klasy KdTree\_Visualizer.},
+  label=lst:python_code,
+  captionpos=b
+]
+from kdtree import KdTree_Visualizer
+
+points1 = [[1, 2], [3, 4], [5, 6]]
+# w folderze zostanie utworzony plik kdtree.gif
+Ktree1 = KdTree_Visualizer(points1, title='KdTree', filename='kdtree')
+# w folderze zostanie utworzony plik kdtree-construction.gif
+Ktree2 = KdTree_Visualizer(points1)
+\end{lstlisting}
+
+\subsection{Wyszukiwanie punktu}
+Zachowuje się tak jak wyżej opisana klasa KdTree, z tą różnicą, że zapisuje w gifie animację wyszukiwania punktu.
+\begin{lstlisting}[
+  style=vscode-darkplus-python,
+  caption={Wyszukiwanie punktu w KdTree\_Visualizer.},
+  label=lst:python_code,
+  captionpos=b
+]
+points1 = [[1, 2.2], Point([3.1, 4]), [-0.5, 6]]
+Ktree1 = KdTree_Visualizer(points1)
+# w folderze zostanie utworzony plik kdtree-contain.gif
+Ktree1.if_contains([1, 2.2], title='KdTree', filename='kdtree-contain')
+\end{lstlisting}
+
+\subsection{Wyszukiwanie punktów w prostokącie}
+Zachowuje się tak jak wyżej opisana klasa KdTree, z tą różnicą, że zapisuje w gifie animację wyszukiwania punktów w prostokącie.
+\begin{lstlisting}[
+  style=vscode-darkplus-python,
+  caption={Wyszukiwanie punktów w prostokącie w KdTree\_Visualizer.},
+  label=lst:python_code,
+  captionpos=b
+]
+points1 = [[1, 2.2], Point([3.1, 4]), [-0.5, 6]]
+Ktree1 = KdTree_Visualizer(points1)
+# w folderze zostanie utworzony plik kdtree-search.gif
+Ktree1.search_in_rectangle(Rectangle([0, 0], [2, 2]), title='KdTree', filename='kdtree-search')
+\end{lstlisting}
 
 \section{Testy}
-...
+
 
 \section{Wizualizacja}
 ...
+
+
+
+
+
+
+
+
 
 \part{Sprawozdanie}
 \section{Wstęp teoretyczny}
