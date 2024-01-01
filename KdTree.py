@@ -9,9 +9,9 @@ class KdTree:
             raise ValueError("The list of points is empty.")
         if not all(len(point) == len(points[0]) for point in points):
             raise ValueError("The points have different dimensions.")
+        points = [Point(point) for point in points]
         if len(set(points)) != len(points):
             raise ValueError("The points are not unique.")
-        points = [Point(point) for point in points]
         self._root = KdTreeNode(points, Rectangle.from_points(points), depth, points_in_node)
         self._points_in_node = points_in_node
         self._dimension = len(points[0])

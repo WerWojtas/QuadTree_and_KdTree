@@ -67,7 +67,11 @@ class CaseGenerator:
             return    [point for cluster in clusters for point in self.uniform_distribution(quantity, cluster, raw)]
         return [Point(point) for cluster in clusters for point in self.uniform_distribution(quantity, cluster, raw)]
 
-    def outliers_distribution(self, quantity, outliers, rectangle, raw=True):
+    def outliers_distribution(self, quantities, rectangle, raw=True):
+        if len(quantities) != 2:
+            raise ValueError("Quantity should be a tuple of (quantity, outliers)")
+        outliers = quantities[1]
+        quantity = quantities[0]
         self.check_quantity(quantity)
         self.check_quantity(outliers, "outliers")
         self.check_rectangle(rectangle)

@@ -8,6 +8,8 @@ class QuadTree:
         if not all(len(point) == 2 for point in points):
             raise ValueError("The points have different dimensions than 2.")
         points = [Point(point) for point in points]
+        if len(set(points)) != len(points):
+            raise ValueError("Not all points are unique.")
         self._root = QuadTreeNode(points, Rectangle.from_points(points), max_capacity, points_in_node)
         self._max_capacity = max_capacity
         self._points_in_node = points_in_node
@@ -29,7 +31,7 @@ class QuadTree:
         area = rectangle.intersection(self._root._rectangle)
         if area is None:
             return []
-        result = list(set(self._root._search_in_rectangle(area, self._points_in_node)))
+        result = list(self._root._search_in_rectangle(area, self._points_in_node))
         if raw:
             return [point.point for point in result]
         return result
@@ -92,20 +94,26 @@ class QuadTreeNode:
     
     def _add_leaves(self, points_in_node=False):
         if points_in_node:
-            return self.points
+            return set(self.points)
         else:
             if self._left_down is None:
-                return self.points
-            return self._left_down._add_leaves() + self._right_down._add_leaves() + self._right_up._add_leaves() + self._left_up._add_leaves()
+                return set(self.points)
+            return self._left_up._add_leaves() \
+                 | self._right_up._add_leaves() \
+                 | self._left_down._add_leaves() \
+                 | self._right_down._add_leaves()
         
     def _search_in_rectangle(self, rectangle, points_in_node=False):
         if self._left_up is None:
-            return [point for point in self.points if rectangle.contains(point)]
+            return set([point for point in self.points if rectangle.contains(point)])
         if rectangle.contains(self._rectangle):
             return self._add_leaves(points_in_node)
         if rectangle.does_intersect(self._rectangle):
-            return self._left_up._search_in_rectangle(rectangle, points_in_node) + self._right_up._search_in_rectangle(rectangle, points_in_node) + self._left_down._search_in_rectangle(rectangle, points_in_node) + self._right_down._search_in_rectangle(rectangle, points_in_node)
-        return []
+            return self._left_up._search_in_rectangle(rectangle, points_in_node) \
+                 | self._right_up._search_in_rectangle(rectangle, points_in_node) \
+                 | self._left_down._search_in_rectangle(rectangle, points_in_node) \
+                 | self._right_down._search_in_rectangle(rectangle, points_in_node)
+        return set()
         
 
 # ------------------------------------------------------------------------------------------------------------------------
@@ -122,13 +130,15 @@ class QuadTree_visualizer:
             raise ValueError("The list of points is empty.")
         if not all(len(point) == len(points[0]) for point in points):
             raise ValueError("The points have different dimensions.")
-        points = [Point(point) for point in points]
+        self.points = [Point(point) for point in points]
         self.vis = Visualizer()
         self.vis.add_point(points)
         self._root = QuadTreeNode(points, Rectangle.from_points(points), depth)
         self.vis.add_polygon(self._root._rectangle.vertices2D)
         self._dimension = len(points[0])
         self._build(self._root)
+        print("sv")
+        self.vis.save_gif(filename="quadtree.gif")
 
     def _build(self,root):
         if root is None:
@@ -208,3 +218,4 @@ class QuadTree_visualizer:
             for i in range(len(result)):
                 result[i] = result[i]._point
             return result
+        
