@@ -29,7 +29,7 @@ class QuadTree:
         area = rectangle.intersection(self._root._rectangle)
         if area is None:
             return []
-        result = self._root._search_in_rectangle(area, self._points_in_node)
+        result = list(set(self._root._search_in_rectangle(area, self._points_in_node)))
         if raw:
             return [point.point for point in result]
         return result
@@ -56,7 +56,7 @@ class QuadTreeNode:
             points_right_up = []
             points_left_down = []
             points_right_down = []
-            center = self._rectangle.center
+            center = self._rectangle.center()
             for point in points:
                 if point.x <= center.x:
                     if point.y <= center.y:
@@ -74,9 +74,9 @@ class QuadTreeNode:
             self._right_down = QuadTreeNode(points_right_down, rec_right_down, max_capacity, points_in_node)
 
     def _if_contains(self, point):
-        if self.left_up is None:
+        if self._left_up is None:
             return point in self.points
-        center = self._rectangle.center
+        center = self._rectangle.center()
         ld = lu = rd = ru = False
         if point.x <= center.x:
             if point.y <= center.y:
@@ -98,7 +98,7 @@ class QuadTreeNode:
                 return self.points
             return self._left_down._add_leaves() + self._right_down._add_leaves() + self._right_up._add_leaves() + self._left_up._add_leaves()
         
-    def _search_in_rectangle(self, rectangle, points_in_node):
+    def _search_in_rectangle(self, rectangle, points_in_node=False):
         if self._left_up is None:
             return [point for point in self.points if rectangle.contains(point)]
         if rectangle.contains(self._rectangle):
@@ -208,4 +208,3 @@ class QuadTree_visualizer:
             for i in range(len(result)):
                 result[i] = result[i]._point
             return result
-    

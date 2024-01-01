@@ -154,7 +154,8 @@ class Rectangle:
             raise ValueError("Can only compute vertices of a 2D rectangle")
         ll = self.lowerleft
         ur = self.upperright
-        return [Rectangle(ll, self.center()), 
-                Rectangle(Point([self.center()[0], ll[1]]), Point([ur[0], self.center()[1]])), 
+        center = self.center()
+        return [Rectangle(ll, center), 
+                Rectangle(Point([center[0], ll[1]]), Point([ur[0], center[1]])), 
                 Rectangle(self.center(), ur), 
-                Rectangle(Point([ll[0], self.center()[1]]), Point([self.center()[0], ur[1]]))]
+                Rectangle(Point([ll[0], center[1]]), Point([center[0], ur[1]]))]
