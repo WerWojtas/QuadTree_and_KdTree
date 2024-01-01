@@ -139,3 +139,23 @@ class Rectangle:
             return (self.lowerleft[0], point[1]), (self.upperright[0], point[1])
         else:
             return (point[0], self.lowerleft[1]), (point[0], self.upperright[1])
+        
+    def center(self):
+        """
+        Compute the center of the rectangle
+        """
+        return Point([self.lowerleft[i] + (self.upperright[i] - self.lowerleft[i])/2 for i in range(len(self))])
+    
+    def to_quaters(self):
+        """
+        Divide rectangle into equal 4 quaters [2d only]
+        """
+        if len(self) != 2:
+            raise ValueError("Can only compute vertices of a 2D rectangle")
+        ll = self.lowerleft
+        ur = self.upperright
+        center = self.center()
+        return [Rectangle(ll, center), 
+                Rectangle(Point([center[0], ll[1]]), Point([ur[0], center[1]])), 
+                Rectangle(self.center(), ur), 
+                Rectangle(Point([ll[0], center[1]]), Point([center[0], ur[1]]))]

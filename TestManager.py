@@ -5,7 +5,6 @@ from tests.test_CaseGenerator import TestCaseGenerator
 from tests.test_KdTree import TestKdTree
 from tests.test_Rectangle import TestRectangle
 from tests.test_Point import TestPoint
-from KdTree import KdTree
 
 class TestManager:
     def __init__(self, tree):
@@ -22,9 +21,17 @@ class TestManager:
             g, a = test()
             good += g
             all += a
-        print(f"Passed {good}/{all} of all self tests.")
+        print(f"Passed {good}/{all} of all tests.")
+        return good == all
+    
+    def all_unittests(self):
         print("Running all unittests:")
-        return unittest.main()
+        suite = unittest.TestSuite()
+        suite.addTest(unittest.makeSuite(TestKdTree))
+        suite.addTest(unittest.makeSuite(TestRectangle))
+        suite.addTest(unittest.makeSuite(TestPoint))
+        runner = unittest.TextTestRunner()
+        runner.run(suite)
     
     def contain_point_int(self):
         print("Test contain_point_int:")
@@ -133,6 +140,3 @@ class TestManager:
             if i not in act:
                 return False
         return True
-
-tm = TestManager(KdTree)
-tm.all_tests()
