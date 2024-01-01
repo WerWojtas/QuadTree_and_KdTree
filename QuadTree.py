@@ -63,12 +63,12 @@ class QuadTreeNode:
                 if point.x <= center.x:
                     if point.y <= center.y:
                         points_left_down.append(point)
-                    if point.y >= center.y:
+                    else:
                         points_left_up.append(point)
-                if point.x >= center.x:
+                else:
                     if point.y <= center.y:
                         points_right_down.append(point)
-                    if point.y >= center.y:
+                    else:
                         points_right_up.append(point)
             self._left_up = QuadTreeNode(points_left_up, rec_left_up, max_capacity, points_in_node)
             self._right_up = QuadTreeNode(points_right_up, rec_right_up, max_capacity, points_in_node)
@@ -82,15 +82,12 @@ class QuadTreeNode:
         ld = lu = rd = ru = False
         if point.x <= center.x:
             if point.y <= center.y:
-                ld = self._left_down._if_contains(point)
-            if point.y >= center.y:
-                lu = self._left_up._if_contains(point)
-        if point.x >= center.x:
+                return self._left_down._if_contains(point)
+            return self._left_up._if_contains(point)
+        else:
             if point.y <= center.y:
-                rd = self._right_down._if_contains(point)
-            if point.y >= center.y:
-                ru = self._right_up._if_contains(point)
-        return ld or lu or rd or ru
+                return self._right_down._if_contains(point)
+            return self._right_up._if_contains(point)
     
     def _add_leaves(self, points_in_node=False):
         if points_in_node:
