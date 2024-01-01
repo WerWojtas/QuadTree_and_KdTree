@@ -108,6 +108,7 @@ class KdTree_visualizer:
         self.vis = Visualizer()
         self.vis.add_title(title)
         self.vis.add_point([(p.point) for p in self.points])
+        self.vis.add_polygon(Rectangle.from_points(self.points).vertices2D, color="blue", fill = False)
         self.scene = {}
         self._root = KdTreeNode_v(self.points, Rectangle.from_points(self.points), self.vis, self.scene, depth, points_in_node)
         self.vis.save_gif(filename=filename)
@@ -135,7 +136,8 @@ class KdTree_visualizer:
             raise ValueError("The rectangle has different dimension than the points in the tree.")
         vis = deepcopy(self.vis)
         vis.add_title(title)
-        vis.add_polygon(rectangle.vertices2D, color="orange", alpha=0.3)
+        ll, lr, ur, ul = rectangle.vertices2D
+        vis.add_line_segment([(ll,lr), (ll,ul), (ul,ur),(lr,ur)], color="red")
         vis.add_point([(p.point) for p in self.points])
         result = self._root._search_rectangle(rectangle, vis, self._points_in_node)
         vis.save_gif(filename=filename)
@@ -152,12 +154,11 @@ class KdTreeNode_v:
             vis.remove_figure(vis.add_point([point.point for point in points], color="orange"))
         elif len(points) == 1:
             self._points = points             # leaf node
-            vis.remove_figure(vis.add_point([point.point for point in points], color="orange"))        
+            vis.add_point([point.point for point in points], color="orange")  
         self._points_in_node = points_in_node # bool if points are stored in the node
         self._left = None                     # left subtree [lower or equal to the axis]
         self._right = None                    # right subtree [greater than the axis]
         self._rectangle = rectangle           # rectangle that contains all points in the node
-        vis.remove_figure(vis.add_polygon(rectangle.vertices2D, color="orange", alpha=0.3))
         self._axis = None                     # axis value
         self._depth = depth                   # even: x-axis, odd: y-axis [for more than 2 dimensions, use depth % number_of_dimensions]
         self._build(points, depth, points_in_node)
@@ -166,7 +167,9 @@ class KdTreeNode_v:
         if len(points) > 1:
             points.sort(key=lambda x: x[depth % len(x)])
             median = (len(points)-1) // 2
+            area = self.vis.add_polygon(self._rectangle.vertices2D, color="orange", alpha=0.3)
             self.vis.remove_figure(self.vis.add_point([point.point for point in points], color="red"))
+            self.vis.remove_figure(area)
             self._axis = points[median][depth % len(points[median])]
             self.vis.add_line_segment([self._rectangle.opposite(points[median].point, depth%2)], color='blue')
             lr, rr = self._rectangle.divide(depth % len(self._rectangle), self._axis)
@@ -178,7 +181,7 @@ class KdTreeNode_v:
         vis.remove_figure(vis.add_polygon(self._rectangle.vertices2D, color="orange", alpha=0.3))
         if self._axis == None:
             if point == self._points[0]:
-                vis.add_point([point.point], color="red")
+                vis.add_point([point.point], color="green")
             else:
                 vis.add_point([point.point], color="black")
             return point == self._points[0]
@@ -189,19 +192,19 @@ class KdTreeNode_v:
         
     def _add_leaves(self, vis, points_in_node=False):
         if points_in_node:
-            vis.add_point([(point.point) for point in self._points], color="red")
+            vis.add_point([(point.point) for point in self._points], color="black")
             return self._points
         else:
             if self._axis is None:
-                vis.add_point([point.point for point in self._points], color="red")
+                vis.add_point([point.point for point in self._points], color="black")
                 return self._points
             return self._left._add_leaves(vis) + self._right._add_leaves(vis)
         
     # find all points in the given rectangle 
     def _search_rectangle(self, area, vis, points_in_node=False):
-        vis.remove_figure(vis.add_polygon(self._rectangle.vertices2D, color="green", alpha=0.3))
+        vis.remove_figure(vis.add_polygon(self._rectangle.vertices2D, color="orange", alpha=0.3))
         if self._axis is None:
-            vis.add_point([point for point in self._points if area.contains(point)], color="red")
+            vis.add_point([point for point in self._points if area.contains(point)], color="black")
             return [point for point in self._points if area.contains(point)]
         if area.contains(self._rectangle):
             return self._add_leaves(vis, points_in_node)
