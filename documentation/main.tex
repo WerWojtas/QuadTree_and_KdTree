@@ -1463,11 +1463,74 @@ W tej sytuacji przeszukiwany prostokąt nie zawiera centralnej grupy punktów, a
 Podobnie jak w przypadku z małą ilością punktów w rozkładzie klastrowym, KdTree buduje się szybciej, jednak w przeszukiwaniu QuadTree jest nieporównywalnie szybszy.
 
 \subsubsection{Z dużą ilością punktów}
-...
+W tej sytuacji przeszukiwany prostokąt zawiera znaczną część centralnej grupy punktów, a także pojedyncze punkty odstające.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.5\textwidth]{outlier_KdTree_2.png}
+  \caption{Siatka KdTree dla zbioru punktów o rozkładzie z punktami odstającymi (2).}
+  \label{fig:outlier_KdTree_2}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.5\textwidth]{outlier_QuadTree_2.png}
+  \caption{Siatka QuadTree dla zbioru punktów o rozkładzie z punktami odstającymi (2).}
+  \label{fig:outlier_QuadTree_2}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.5\textwidth]{outlier_time_2.png}
+  \caption{Wyniki pomiarów porównujące wydajność QuadTree i KdTree dla zbioru punktów o rozkładzie z punktami odstającymi (2).}
+  \label{fig:outlier_time_2}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.5\textwidth]{outlier_graph_2.png}
+  \caption{Wykres porównujący wydajność QuadTree i KdTree dla zbioru punktów o rozkładzie z punktami odstającymi (2).}
+  \label{fig:outlier_graph_2}
+\end{figure}
+
+Po raz kolejny, przy problemie zawierającym duże ilości punktów KdTree zarówno buduje się nieznacznie szybciej, jak i przeszukiwanie, wraz ze wzrosem liczby punktów jest znacznie szybsze niż QuadTree.
+
 \subsection{Zbiór punktów o rozkładzie na osiach symetrii}
-...
+W tym przypadku mamy podobną sytuację co w rozkładzie "siatka", jednakże punkty są równomiernie rozłożone wzdłuż osi symetrii prostokąta, a więc wiele punktów jest współliniowych.
+Przeszukiwany obszar zawiera fragmenty obu prostych, co powoduje, że drzewo będzie musiało pokonać znacznie większą głębokość, aby znaleźć wszystkie punkty.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.5\textwidth]{cross_KdTree.png}
+  \caption{Siatka KdTree dla zbioru punktów o rozkładzie na osiach symetrii.}
+  \label{fig:cross_KdTree}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.5\textwidth]{cross_QuadTree.png}
+  \caption{Siatka QuadTree dla zbioru punktów o rozkładzie na osiach symetrii.}
+  \label{fig:cross_QuadTree}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.5\textwidth]{cross_time.png}
+  \caption{Wyniki pomiarów porównujące wydajność QuadTree i KdTree dla zbioru punktów o rozkładzie na osiach symetrii.}
+  \label{fig:cross_time}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.5\textwidth]{cross_graph.png}
+  \caption{Wykres porównujący wydajność QuadTree i KdTree dla zbioru punktów o rozkładzie na osiach symetrii.}
+  \label{fig:cross_graph}
+\end{figure}
+
+Podczas budowy drzewa QuadTree czas diametralnie wzrósł w okolicach 70.000 punktów, KdTree buduje się znacznie szybciej. W przeszukiwaniu obie struktury zachowały się podobnie.
+
 \subsection{Zbiór punktów o rozkładzie na bokach prostokąta}
-...
+
 
 \subsection{Porównanie efektywności QuadTree dla różnych wartości max\_capacity}
 ...
