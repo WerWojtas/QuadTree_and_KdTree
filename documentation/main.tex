@@ -393,6 +393,18 @@ Reprezentacja niemutowalnego prostokąta o dodatniej liczbie wymiarów, zapisane
   - depth: wymiar, wzdłuż którego zostaną wyznaczone punkty leżące na przeciwległych bokach prostokąta.
 
   Wywołuje ValueError("Can only compute opposite points of a 2D rectangle") jeśli prostokąt nie jest dwuwymiarowy. 
+
+  \item \textbt{center(self)}:
+  Zwraca punkt będący środkiem prostokąta.
+
+  - RESULT: punkt będący środkiem prostokąta.
+
+  \item \textbf{to\_quaters(self)}:
+  Dzieli prostokąt na cztery równe podprostokąty, zwraca listę podprostokątów klasy Rectangle.
+
+  - RESULT: lista podprostokątów klasy Rectangle.
+
+  Wywołuje ValueError("Can only divide a 2D rectangle") jeśli prostokąt nie jest dwuwymiarowy.
 \end{itemize}
 
 \section{QuadTree}
@@ -400,18 +412,24 @@ Plik zawiera implementację drzewa QuadTree (QuadTree) oraz jego bliźniaczą we
 \subsection{QuadTree}
 Klasa implementująca drzewo QuadTree wraz z metodami wyszukiwania oraz weryfikacją danych wejściowych.
 \begin{itemize}
-  \item \textbf{QuadTree(points, TODO)}:
+  \item \textbf{QuadTree(points, max\_capacity=1, points\_in\_node=False)}:
   Konstruktor drzewa przyjmuje listę punktów (obiekty klasy Point lub obiektów iterowalnych) jako argument i tworzy drzewo zawierające te punkty.
 
   - points: lista punktów (obiektów klasy Point lub obiektów iterowalnych), które będą przechowywane w drzewie.
 
-  TODO
+  - max\_capacity: maksymalna liczba punktów w węźle, po przekroczeniu której następuje podział węzła.
+
+  - points\_in\_node: określa czy w każdym węźle przechowywana jest lista znajdujących się w nim punktów (True), czy tylko w liściach (False).
 
   - RESULT: drzewo QuadTree zawierające punkty z listy points.
 
   Wywołuje ValueError("The list of points is empty.") jeśli lista points jest pusta.
 
   Wywołuje ValueError("The points have dimensions different than 2.") jeśli wymiary punktów nie są równe 2.
+
+  Wywołuje ValueError("The max capacity must be greater than 0.") jeśli max\_capacity jest mniejsze niż 1.
+
+  Wywołuje ValueError("Not all points are unique.") jeśli lista points zawiera duplikaty.
 
   \item \textbf{if\_contains(self, point)}:
   Sprawdza czy drzewo zawiera punkt (obiekt klasy Point lub obiekt iterowalny), zwraca True jeśli tak, w przeciwnym wypadku False.
@@ -439,12 +457,16 @@ Klasa implementująca drzewo QuadTree wraz z metodami wyszukiwania oraz weryfika
 \subsection{QuadTree\_visualizer}
 Klasa implementująca drzewo QuadTree wraz z metodami wyszukiwania oraz weryfikacją danych wejściowych. Dodatkowo umożliwia wizualizację drzewa w postaci gifów.
 \begin{itemize}
-  \item \textbf{QuadTree\_visualizer(points, TODO, title="QuadTree", filename="QuadTree-construction")}:
+  \item \textbf{QuadTree\_visualizer(points, max\_capacity=1, points\_in\_node=False, visualize\_gif=True, title="QuadTree", filename="QuadTree-construction")}:
   Konstruktor drzewa przyjmuje listę punktów (obiekty klasy Point lub obiektów iterowalnych) jako argument i tworzy drzewo zawierające te punkty. Dodatkowo tworzy obiekt klasy Visualizer i zapisuje plik o rozszerzeniu .gif w tym samym folderze.
 
   - points: lista punktów (obiektów klasy Point lub obiektów iterowalnych), które będą przechowywane w drzewie.
 
-  TODO
+  - max\_capacity: maksymalna liczba punktów w węźle, po przekroczeniu której następuje podział węzła.
+
+  - points\_in\_node: określa czy w każdym węźle przechowywana jest lista znajdujących się w nim punktów (True), czy tylko w liściach (False).
+
+  - visualize\_gif: określa czy wizualizacja drzewa ma zostać zapisana w pliku .gif, czy tylko wyświetlona.
 
   - title: tytuł wyświetlany na wykresie.
 
@@ -456,10 +478,24 @@ Klasa implementująca drzewo QuadTree wraz z metodami wyszukiwania oraz weryfika
 
   Wywołuje ValueError("The points have dimensions different than 2.") jeśli wymiary punktów nie są równe 2.
 
-  \item \textbf{if\_contains(self, point, title="QuadTree", filename="QuadTree-contains")}:
+  Wywołuje ValueError("The max capacity must be greater than 0.") jeśli max\_capacity jest mniejsze niż 1.
+
+  Wywołuje ValueError("Not all points are unique.") jeśli lista points zawiera duplikaty.
+
+  Legenda:
+  \begin{itemize}
+      \item \textbf{\textcolor{blue}{Granatowe odcinki}}: odcinki reprezentujące podział węzła.
+      \item \textbf{\textcolor{cyan}{Niebieskie punkty}}: punkty nieprzetworzone.
+      \item \textbf{\textcolor{red}{Czerwone punkty}}: punkty aktualnie przetwarzane.
+      \item \textbf{\textcolor{orange}{Pomarańczowe punkty}}: punkty przetworzone.
+      \item \textbf{\textcolor{pink}{Żółty obszar}}: obszar aktualnie przetwarzany.
+  \end{itemize}
+  \item \textbf{if\_contains(self, point, visualize\_gif=True, title="QuadTree", filename="QuadTree-contains")}:
   Sprawdza czy drzewo zawiera punkt (obiekt klasy Point lub obiekt iterowalny), zwraca True jeśli tak, w przeciwnym wypadku False. Dodatkowo tworzy obiekt klasy Visualizer i zapisuje plik o rozszerzeniu .gif w tym samym folderze.
 
   - point: punkt (obiekt klasy Point lub obiekt iterowalny), który ma zostać wyszukany w drzewie.
+
+  - visualize\_gif: określa czy wizualizacja drzewa ma zostać zapisana w pliku .gif, czy tylko wyświetlona.
 
   - title: tytuł wyświetlany na wykresie.
 
@@ -469,10 +505,23 @@ Klasa implementująca drzewo QuadTree wraz z metodami wyszukiwania oraz weryfika
 
   Wywołuje ValueError("The point has different dimension than 2.") jeśli wymiary punktu nie są równe 2.
 
-  \item \textbf{search\_in\_rectangle(self, rectangle, raw=False, title="QuadTree", filename="QuadTree-search")}:
+  Legenda:
+  \begin{itemize}
+      \item \textbf{\textcolor{blue}{Granatowe odcinki}}: odcinki reprezentujące podział węzła.
+      \item \textbf{\textcolor{cyan}{Niebieskie punkty}}: punkty nieprzetworzone.
+      \item \textbf{\textcolor{red}{Czerwone punkty}}: punkty aktualnie przetwarzane.
+      \item \textbf{\textcolor{orange}{Pomarańczowe punkty}}: punkty przetworzone.
+      \item \textbf{\textcolor{green}{Zielony punkt}}: punkt, który został znaleziony.
+      \item \textbf{\textcolor{black}{Czarny punkt}}: lokalizacja punktu, który nie został znaleziony.
+      \item \textbf{\textcolor{pink}{Żółty obszar}}: obszar aktualnie przetwarzany.
+  \end{itemize}
+
+  \item \textbf{search\_in\_rectangle(self, rectangle, visualize\_gif=True, raw=False, title="QuadTree", filename= "QuadTree-search")}:
   Wyszukuje punkty znajdujące się w prostokącie (obiekt klasy Rectangle), zwraca listę punktów (obiektów klasy Point) lub listę list punktów (obiektów klasy Point) w zależności od wartości parametru raw. Dodatkowo tworzy obiekt klasy Visualizer i zapisuje plik o rozszerzeniu .gif w tym samym folderze.
 
   - rectangle: prostokąt (obiekt klasy Rectangle), w którym wyszukiwane są punkty.
+
+  - visualize\_gif: określa czy wizualizacja drzewa ma zostać zapisana w pliku .gif, czy tylko wyświetlona.
 
   - raw: określa czy zwracana lista ma zawierać obiekty klasy Point (False) lub listy współrzędnych punktów (True).
 
@@ -485,6 +534,17 @@ Klasa implementująca drzewo QuadTree wraz z metodami wyszukiwania oraz weryfika
   Wywołuje ValueError("The rectanangle is not a Rectangle object.") jeśli rectangle nie jest obiektem klasy Rectangle.
 
   Wywołuje ValueError("The rectangle has different dimension than 2.") jeśli wymiary prostokąta nie są równe 2.
+
+  Legenda:
+  \begin{itemize}
+      \item \textbf{\textcolor{blue}{Granatowe odcinki}}: odcinki reprezentujące podział węzła.
+      \item \textbf{\textcolor{red}{Czerwone odcinki}}: odcinki reprezentujące obszar przeszukiwania.
+      \item \textbf{\textcolor{cyan}{Niebieskie punkty}}: punkty nieprzetworzone.
+      \item \textbf{\textcolor{red}{Czerwone punkty}}: punkty aktualnie przetwarzane.
+      \item \textbf{\textcolor{orange}{Pomarańczowe punkty}}: punkty przetworzone.
+      \item \textbf{\textcolor{green}{Zielony punkt}}: punkt, który został znaleziony.
+      \item \textbf{\textcolor{pink}{Żółty obszar}}: obszar aktualnie przetwarzany.
+  \end{itemize}
 \end{itemize}
 
 \section{KdTree}
@@ -494,6 +554,7 @@ Klasa implementująca drzewo KdTree wraz z metodami wyszukiwania oraz weryfikacj
 \begin{itemize}
   \item \textbf{KdTree(points, depth=0, points\_in\_node=False)}:
   Konstruktor drzewa przyjmuje listę punktów (obiekty klasy Point lub obiektów iterowalnych) jako argument i tworzy drzewo zawierające te punkty.
+  
   - points: lista punktów (obiektów klasy Point lub obiektów iterowalnych), które będą przechowywane w drzewie.
 
   - depth: głębokość węzła, operacja $\%len(point)$ wskazuje na wymiar, w którym następuje podział węzła.
@@ -532,7 +593,7 @@ Klasa implementująca drzewo KdTree wraz z metodami wyszukiwania oraz weryfikacj
 \subsection{KdTree\_visualizer}
 Klasa implementująca drzewo KdTree wraz z metodami wyszukiwania oraz weryfikacją danych wejściowych. Dodatkowo umożliwia wizualizację drzewa w postaci gifów.
 \begin{itemize}
-  \item \textbf{KdTree\_visualizer(points, depth=0, points\_in\_node=False, title="KdTree", filename="KdTree-construction")}:
+  \item \textbf{KdTree\_visualizer(points, depth=0, points\_in\_node=False, visualize\_gif=True, title="KdTree", filename="KdTree-construction")}:
   Konstruktor drzewa przyjmuje listę punktów (obiekty klasy Point lub obiektów iterowalnych) jako argument i tworzy drzewo zawierające te punkty. Dodatkowo tworzy obiekt klasy Visualizer i zapisuje plik o rozszerzeniu .gif w tym samym folderze.
 
   - points: lista punktów (obiektów klasy Point lub obiektów iterowalnych), które będą przechowywane w drzewie.
@@ -540,6 +601,8 @@ Klasa implementująca drzewo KdTree wraz z metodami wyszukiwania oraz weryfikacj
   - depth: głębokość węzła, operacja $\%len(point)$ wskazuje na wymiar, w którym następuje podział węzła.
 
   - points\_in\_node: określa czy w każdym węźle przechowywana jest lista znajdujących się w nim punktów (True), czy tylko w liściach (False).
+
+  - visualize\_gif: określa czy wizualizacja drzewa ma zostać zapisana w pliku .gif (True), czy tylko wyświetlona (False).
 
   - title: tytuł wyświetlany na wykresie.
 
@@ -551,10 +614,23 @@ Klasa implementująca drzewo KdTree wraz z metodami wyszukiwania oraz weryfikacj
 
   Wywołuje ValueError("The points have different dimensions.") jeśli wymiary punktów nie są równe.
 
-  \item \textbf{if\_contains(self, point, title="KdTree", filename="KdTree-contains")}:
+  Wywołuje ValueError("Not all points are unique.") jeśli lista points zawiera duplikaty.
+
+  Legenda:
+  \begin{itemize}
+      \item \textbf{\textcolor{blue}{Granatowe odcinki}}: odcinki reprezentujące podział węzła.
+      \item \textbf{\textcolor{cyan}{Niebieskie punkty}}: punkty nieprzetworzone.
+      \item \textbf{\textcolor{red}{Czerwone punkty}}: punkty aktualnie przetwarzane.
+      \item \textbf{\textcolor{orange}{Pomarańczowe punkty}}: punkty przetworzone.
+      \item \textbf{\textcolor{pink}{Żółty obszar}}: obszar aktualnie przetwarzany.
+  \end{itemize}
+
+  \item \textbf{if\_contains(self, point, visualize\_gif=True, title="KdTree", filename="KdTree-contains")}:
   Sprawdza czy drzewo zawiera punkt (obiekt klasy Point lub obiekt iterowalny), zwraca True jeśli tak, w przeciwnym wypadku False. Dodatkowo tworzy obiekt klasy Visualizer i zapisuje plik o rozszerzeniu .gif w tym samym folderze.
 
   - point: punkt (obiekt klasy Point lub obiekt iterowalny), który ma zostać wyszukany w drzewie.
+
+  - visualize\_gif: określa czy wizualizacja drzewa ma zostać zapisana w pliku .gif (True), czy tylko wyświetlona (False).
 
   - title: tytuł wyświetlany na wykresie.
 
@@ -564,12 +640,25 @@ Klasa implementująca drzewo KdTree wraz z metodami wyszukiwania oraz weryfikacj
 
   Wywołuje ValueError("The point has different dimension than the points in the tree.") jeśli wymiary punktu nie są równe wymiarom punktów w drzewie.
 
-  \item \textbf{search\_in\_rectangle(self, rectangle, raw=False, title="KdTree", filename="KdTree-search")}:
+  Legenda:
+  \begin{itemize}
+      \item \textbf{\textcolor{blue}{Granatowe odcinki}}: odcinki reprezentujące podział węzła.
+      \item \textbf{\textcolor{cyan}{Niebieskie punkty}}: punkty nieprzetworzone.
+      \item \textbf{\textcolor{red}{Czerwone punkty}}: punkty aktualnie przetwarzane.
+      \item \textbf{\textcolor{orange}{Pomarańczowe punkty}}: punkty przetworzone.
+      \item \textbf{\textcolor{green}{Zielony punkt}}: punkt, który został znaleziony.
+      \item \textbf{\textcolor{black}{Czarny punkt}}: lokalizacja punktu, który nie został znaleziony.
+      \item \textbf{\textcolor{pink}{Żółty obszar}}: obszar aktualnie przetwarzany.
+  \end{itemize}
+
+  \item \textbf{search\_in\_rectangle(self, rectangle, raw=False, visualize\_gif=True, title="KdTree", filename= "KdTree-search")}:
   Wyszukuje punkty znajdujące się w prostokącie (obiekt klasy Rectangle), zwraca listę punktów (obiektów klasy Point) lub listę list punktów (obiektów klasy Point) w zależności od wartości parametru raw. Dodatkowo tworzy obiekt klasy Visualizer i zapisuje plik o rozszerzeniu .gif w tym samym folderze.
 
   - rectangle: prostokąt (obiekt klasy Rectangle), w którym wyszukiwane są punkty.
 
   - raw: określa czy zwracana lista ma zawierać obiekty klasy Point (False) lub listy współrzędnych punktów (True).
+
+  - visualize\_gif: określa czy wizualizacja drzewa ma zostać zapisana w pliku .gif (True), czy tylko wyświetlona (False).
 
   - title: tytuł wyświetlany na wykresie.
 
@@ -580,6 +669,17 @@ Klasa implementująca drzewo KdTree wraz z metodami wyszukiwania oraz weryfikacj
   Wywołuje ValueError("The rectanangle is not a Rectangle object.") jeśli rectangle nie jest obiektem klasy Rectangle.
 
   Wywołuje ValueError("The rectangle has different dimension than the points in the tree.") jeśli wymiary prostokąta nie są równe wymiarom punktów w drzewie.
+
+  Legenda:
+  \begin{itemize}
+      \item \textbf{\textcolor{blue}{Granatowe odcinki}}: odcinki reprezentujące podział węzła.
+      \item \textbf{\textcolor{red}{Czerwone odcinki}}: odcinki reprezentujące obszar przeszukiwania.
+      \item \textbf{\textcolor{cyan}{Niebieskie punkty}}: punkty nieprzetworzone.
+      \item \textbf{\textcolor{red}{Czerwone punkty}}: punkty aktualnie przetwarzane.
+      \item \textbf{\textcolor{orange}{Pomarańczowe punkty}}: punkty przetworzone.
+      \item \textbf{\textcolor{green}{Zielony punkt}}: punkt, który został znaleziony.
+      \item \textbf{\textcolor{pink}{Żółty obszar}}: obszar aktualnie przetwarzany.
+  \end{itemize}
 \end{itemize}
 
 \section{Comparator}
@@ -632,18 +732,18 @@ Klasa generująca przypadki testowe dla struktur QuadTree i KdTree.
 
   Wywołuje ValueError("sigma must have the same dimensionality as rectangle") jeśli wymiary sigma nie są równe wymiarom prostokąta.
 
-  \item \textbf{grid\_distribution(self, columns, rows, rectangle, raw=True)}:
+  \item \textbf{grid\_distribution(self, quantity, rectangle, raw=True)}:
   Generuje równo rozłożone punkty w siatce wewnątrz prostokąta.
 
-  - columns: liczba kolumn siatki.
-
-  - rows: liczba wierszy siatki.
+  - quantity: krotka (columns, rows) określająca liczbę kolumn i wierszy punktów do wygenerowania.
 
   - rectangle: prostokąt (obiekt klasy Rectangle), w którym mają zostać wygenerowane punkty.
 
   - raw: określa czy zwracana lista ma zawierać obiekty klasy Point (False) lub listy współrzędnych punktów (True).
 
   - RESULT: lista punktów (obiektów klasy Point) lub lista list punktów (obiektów klasy Point) w zależności od wartości parametru raw.
+
+  Wywołuje ValueError("Quantity must be a tuple of two positive integers") jeśli quantity nie jest krotką dwóch liczb całkowitych większych od 0.
 
   Wywołuje ValueError("columns must be positive") jeśli columns jest mniejsze od 0.
 
@@ -666,10 +766,10 @@ Klasa generująca przypadki testowe dla struktur QuadTree i KdTree.
 
   Wywołuje ValueError("The rectanangle is not a Rectangle object.") jeśli element listy clusters nie jest obiektem klasy Rectangle.
 
-  \item \textbf{outliers\_distribution(self, quantity, outliers, rectangle, raw=True)}:
+  \item \textbf{outliers\_distribution(self, quantities, rectangle, raw=True)}:
   Generuje punkty wewnątrz prostokąta wraz z punktami odstającymi. Punkty są generowane w środku dwukrotnie mniejszego prostokąta przy zachowaniu tego samego punktu centralnego, a punkty odstające na przestrzeni całego prostokąta.
 
-  - quantity: liczba punktów do wygenerowania.
+  - quantities: krotka (quantity, outliers) określająca liczbę punktów i punktów odstających do wygenerowania.
 
   - outliers: liczba punktów odstających do wygenerowania.
 
@@ -685,12 +785,10 @@ Klasa generująca przypadki testowe dla struktur QuadTree i KdTree.
 
   Wywołuje ValueError("The rectanangle is not a Rectangle object.") jeśli rectangle nie jest obiektem klasy Rectangle.
 
-  \item \textbf{cross\_distribution(self, vertical, horizontal, rectangle, raw=True)}:
+  \item \textbf{cross\_distribution(self, quantity, rectangle, raw=True)}:
   Generuje punkty wewnątrz prostokąta na jego osiach symetrii względem jego boków.
 
-  - vertical: liczba punktów do wygenerowania na osi pionowej.
-
-  - horizontal: liczba punktów do wygenerowania na osi poziomej.
+  - quantity: krotka (vertical, horizontal) określająca liczbę punktów do wygenerowania w pionie i poziomie.
 
   - rectangle: prostokąt (obiekt klasy Rectangle), w którym mają zostać wygenerowane punkty.
 
@@ -720,10 +818,10 @@ Klasa generująca przypadki testowe dla struktur QuadTree i KdTree.
   Wywołuje ValueError("The rectanangle is not a Rectangle object.") jeśli rectangle nie jest obiektem klasy Rectangle.
 \end{itemize}
 
-\subsection{Comparision}
+\subsection{Comparision.ipynb}
 Jupyter Notebook zawierający porównanie wydajności struktur QuadTree i KdTree wraz z generacją wykresów. Składa się z czterech części:
 \begin{itemize}
-  \item \textbf{Sprawozdanie poprawności działania porównywanych struktur}:
+  \item \textbf{Sprawdzenie poprawności działania porównywanych struktur}:
   Sprawdzenie poprawności działania struktur QuadTree i KdTree za pomocą testów jednostkowych z modułu Tests.
   \item \textbf{Pomiary wydajności struktur QuadTree i KdTree dla różnych danych wejściowych oraz ich rozmiaru}:
   Pomiar czasu działania struktur QuadTree i KdTree dla różnych danych wejściowych wygenerowanych za pomocą CaseGenerator.
@@ -731,10 +829,12 @@ Jupyter Notebook zawierający porównanie wydajności struktur QuadTree i KdTree
   Generowanie wykresów na podstawie danych z poprzedniej części.
   \item \textbf{Pomiary dla indywidualnych przypadków pod zastosowania drzewa}:
   Wykorzystanie drzew pod względem ich unikalnych możliwości.
+  \item \textbf{Wizualizacja powyższych zbiorów, oraz siatki}:
+  Wizualizacja zbiorów danych wejściowych oraz siatek utworzonych przez drzewa.
 \end{itemize}
 
 \section{Tests}
-Moduł zawiera testy integracyjne dla struktur QuadTree, KdTree oraz jednostkowe wszystkich komponentów.
+Moduł zawiera testy jednostkowe oraz integracyjne dla struktur QuadTree, KdTree oraz jednostkowe wszystkich komponentów.
 \subsection{TestManager}
 Klasa zawierająca testy integracyjne dla struktur QuadTree i KdTree.
 \begin{itemize}
@@ -744,9 +844,13 @@ Klasa zawierająca testy integracyjne dla struktur QuadTree i KdTree.
   - tree: drzewo (obiekt klasy QuadTree lub KdTree), które ma zostać przetestowane.
 
   \item \textbf{all\_tests(self)}:
-  Wykonuje wszystkie testy jednostkowe i integracyjne zawarte w klasie TestManager. Przebieg jest wyświetlany w konsoli.
+  Wykonuje wszystkie integracyjne zawarte w klasie TestManager. Przebieg jest wyświetlany w konsoli.
 
   - RESULT: True jeśli wszystkie testy zakończyły się sukcesem, False w przeciwnym wypadku.
+
+  \item \textbf{all\_unittests(self)}:
+  Wykonuje wszystkie jednostkowe zawarte w klasie TestManager. Przebieg jest wyświetlany w konsoli.
+  wykorzystuje bibliotekę unittest.
 
   \item \textbf{contain\_point\_int(self)}:
   Testuje metodę if\_contains dla punktów całkowitoliczbowych. Przebieg jest wyświetlany w konsoli.
@@ -876,6 +980,7 @@ Plik zawiera implementację klasy Visualizer, która umożliwia wizualizacje. Zo
 \subsection{demo.ipynb}
 Plik Jupyter Notebook, który zawiera przykładowe wykorzystanie klasy Visualizer.
 
+\newpage
 \part{Instrukcja korzystania z programu}
 \section{Utilities}
 \subsection{Point}
@@ -896,7 +1001,7 @@ point3 = Point([]) # ValueError
 Na obiekcie klasy Point można wykonywać różne operacje. Gdy do wykonania operacji wymagany jest inny punkt, to musi mieć on taki sam wymiar jak punkt na którym wykonywana jest operacja.
 \begin{lstlisting}[
   style=vscode-darkplus-python,
-  caption={Operacje arytmetyczne na obiekcie klasy Point.},
+  caption={Przykładowe operacje na obiekcie klasy Point.},
   label=lst:python_code,
   captionpos=b
 ]
@@ -946,7 +1051,9 @@ rectangle1.lowerleft # Point([1, -2])
 rectangle1.upperright # Point([7.4, 5])
 Rectangle.from_points([2, 0.3], [9, 5]) # Rectangle([2, 0.3], [9, 5])
 rectangle1.divide(0, 3) # [Rectangle([1, -2], [3, 5]), Rectangle([3, -2], [7.4, 5])]
-rectanangle2.vertices # [Point([1, -2.3]), Point([3.2, -2.3]), Point([3.2, 5]), Point([1, 5])]
+rectanangle2.vertices # [Point([1, -2.3]), Point([3.2, -2.3]), 
+                      #  Point([3.2, 5]), Point([1, 5])]
+\end{lstlisting}
 
 \section{QuadTree}
 \subsection{Tworzenie drzewa}
@@ -960,11 +1067,11 @@ Aby utworzyć drzewo należy utworzyć obiekt klasy QuadTree, który przyjmuje l
 from quadtree import QuadTree
 
 points1 = [[1, 2], [3, 4], [5, 6]]
-Qtree1 = QuadTree(points1, TODO)
+Qtree1 = QuadTree(points1)
 points2 = [Point([1, 2]), Point([3, 4])]
-Qtree2 = QuadTree(points2, TODO)
+Qtree2 = QuadTree(points2, points_in_node=True)
 points3 = [[-1, 2.23], Point([3.3, -4]), [7.3, 43.212]]
-Qtree3 = QuadTree(points3, TODO)
+Qtree3 = QuadTree(points3, max_capacity=3)
 # ValueError: The list of points is empty.
 Qtree4 = QuadTree([]) # ValueError
 # ValueError: The points have different dimensions.
@@ -1045,10 +1152,10 @@ Aby sprawdzić czy drzewo zawiera punkt należy wywołać metodę if\_contains, 
   captionpos=b
 ]
 ktree = KdTree([[1, -2.2], [3.6, 4], Point([5, 6])])
-ktree.if_contains([1, -2.2])         # True
-ktree.if_contains([1, 2])            # False
+ktree.if_contains([1, -2.2])                # True
+ktree.if_contains(Point([1, 2]))            # False
 # ValueError: The point has different dimension than the points in the tree.
-ktree.if_contains([1, 2, 3])         # ValueError
+ktree.if_contains([1, 2, 3])                # ValueError
 \end{lstlisting}
 
 \subsection{Wyszukiwanie punktów w prostokącie}
@@ -1061,7 +1168,7 @@ Aby wyszukać punkty znajdujące się w prostokącie należy wywołać metodę s
 ]
 ktree = KdTree([[1, -2.2], Point([3.6, 4]), [2, -6]])
 kdtree.search_in_rectangle(Rectangle([0, -3], [2, 2]), raw=False) # [Point([1, -2.2])]
-ktree.search_in_rectangle(Rectangle([0, -10], [3, 2]), raw=True)  # [[1, -2.2], [2, -6]]
+ktree.search_in_rectangle(Rectangle([0, -10], [3, 2]), raw=True)  # [[1,-2.2],[2,-6]]
 ktree.search_in_rectangle(Rectangle([0, 0], [2, 2]))  # []
 # ValueError: The rectanangle is not a Rectangle object.
 ktree.search_in_rectangle([0, 0, 2, 2])                           # ValueError
@@ -1083,9 +1190,9 @@ from quadtree import QuadTree_Visualizer
 
 points1 = [[1, 2], [3, 4], [5, 6]]
 # w folderze zostanie utworzony plik quadtree.gif
-Qtree1 = QuadTree_Visualizer(points1, TODO, title='QuadTree', filename='quadtree')
-# w folderze zostanie utworzony plik quadtree-cons.gif
-Qtree1 = QuadTree_Visualizer(points1, TODO, title='QuadTree', filename='quadtree-cons')
+Qtree1 = QuadTree_Visualizer(points1, title='QuadTree', filename='quadtree')
+# w folderze zostanie utworzony plik QuadTree-construction.gif
+Qtree2 = QuadTree_Visualizer(points1, points_in_node=True)
 \end{lstlisting}
 
 \subsection{Wyszukiwanie punktu}
@@ -1097,9 +1204,9 @@ Zachowuje się tak jak wyżej opisana klasa QuadTree, z tą różnicą, że zapi
   captionpos=b
 ]
 points1 = [[1, 2.2], Point([3.1, 4]), [-0.5, 6]]
-Qtree1 = QuadTree_Visualizer(points1, TODO, title='QuadTree', filename='quadtree-contain')
-# w folderze zostanie utworzony plik quadtree-contain.gif
-Qtree1.if_contains([1, 2.2], title='QuadTree', filename='quadtree-contain')
+Qtree1 = QuadTree_Visualizer(points1, title='QuadTree', filename='quadtree-contain')
+# w folderze zostanie utworzony plik Quadtree-contains.gif
+Qtree1.if_contains([1, 2.2])
 \end{lstlisting}
 
 \subsection{Wyszukiwanie punktów w prostokącie}
@@ -1111,9 +1218,9 @@ Zachowuje się tak jak wyżej opisana klasa QuadTree, z tą różnicą, że zapi
   captionpos=b
 ]
 points1 = [[1, 2.2], Point([3.1, 4]), [-0.5, 6]]
-Qtree1 = QuadTree_Visualizer(points1, TODO)
-# w folderze zostanie utworzony plik quadtree-search.gif
-Qtree1.search_in_rectangle(Rectangle([0, 0], [2, 2]), title='QuadTree', filename='quadtree-search')
+Qtree1 = QuadTree_Visualizer(points1, points_in_node=True, visualize_gif=False)
+# w folderze zostanie utworzony plik Quadtree-search.gif
+Qtree1.search_in_rectangle(Rectangle([0, 0], [2, 2]), title='Quad1')
 \end{lstlisting}
 
 \section{KdTree\_visualizer}
@@ -1160,32 +1267,34 @@ Zachowuje się tak jak wyżej opisana klasa KdTree, z tą różnicą, że zapisu
 points1 = [[1, 2.2], Point([3.1, 4]), [-0.5, 6]]
 Ktree1 = KdTree_Visualizer(points1)
 # w folderze zostanie utworzony plik kdtree-search.gif
-Ktree1.search_in_rectangle(Rectangle([0, 0], [2, 2]), title='KdTree', filename='kdtree-search')
+Ktree1.search_in_rectangle(Rectangle([0, 0], [2, 2]))
 \end{lstlisting}
 
 \section{Testy}
 Aby przetestować strukturę należy utworzyć obiekt klasy TestManager, który przyjmuje drzewo (obiekt klasy QuadTree lub KdTree) jako argument, a następnie uruchomić interesujące nas funkcje. Rezultat testów jest wyświetlany w konsoli.
 \begin{lstlisting}[
   style=vscode-darkplus-python,
-  caption={Testy integracyjne.},
+  caption={Testy.},
   label=lst:python_code,
   captionpos=b
 ]
 testman1 = TestManager(QuadTree)
 testman2 = TestManager(KdTree)
-testman1.all_tests()                 # wykonuje wszystkie testy jednostkowe i integracyjne
-testman1.contain_point_int()         # wykonuje testy dla punktów całkowitoliczbowych
-testman2.contain_point_float()       # wykonuje testy dla punktów zmiennoprzecinkowych
-testman2.search_in_rectangle_int()   # wykonuje testy dla punktów całkowitoliczbowych
-testman2.search_in_rectangle_float() # wykonuje testy dla punktów zmiennoprzecinkowych
+testman1.all_tests()                 # wykonuje wszystkie testy integracyjne
+testman2.all_unittest()              # wykonuje wszystkie testy jednostkowe
+testman1.contain_point_int()         # wykonuje testy dla punktow int
+testman2.contain_point_float()       # wykonuje testy dla punktow float
+testman2.search_in_rectangle_int()   # wykonuje testy dla punktow int
+testman2.search_in_rectangle_float() # wykonuje testy dla punktow float
 \end{lstlisting}
 
 \section{Wizualizacja}
 Przykładowe wizualizacje znajdują się w pliku $visualizer/demo.ipynb$.
 
 \section{Porównanie}
-Porównanie wydajności struktur QuadTree i KdTree znajduje się w pliku $Comparision.ipynb$, wraz z generacją wykresów oraz opisem.
+Porównanie wydajności struktur QuadTree i KdTree znajduje się w pliku $Comparision.ipynb$, wraz z generacją wykresów oraz otrzymanymi siatkami.
 
+\newpage
 \part{Sprawozdanie}
 \section{Wstęp teoretyczny}
 \subsection{Cel sprawozdania}
