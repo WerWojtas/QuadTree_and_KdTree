@@ -109,11 +109,8 @@ class KdTree_visualizer:
         self.vis.add_title(title)
         self.vis.add_point([(p.point) for p in self.points])
         self.scene = {}
-        print("sv3")
         self._root = KdTreeNode_v(self.points, Rectangle.from_points(self.points), self.vis, self.scene, depth, points_in_node)
-        print("sv4")
         self.vis.save_gif(filename=filename)
-        print("sv")
         self._points_in_node = points_in_node
         self._dimension = len(points[0])
 
@@ -211,12 +208,3 @@ class KdTreeNode_v:
         if area.does_intersect(self._rectangle):
             return self._left._search_rectangle(area, vis, points_in_node) + self._right._search_rectangle(area, vis, points_in_node)
         return []
-
-from comparator.CaseGenerator import CaseGenerator
-
-print("sv1")
-cg= CaseGenerator()
-p = cg.grid_distribution((10,10), Rectangle(Point([0,0]), Point([10,10])))
-print("sv2")
-a = KdTree_visualizer(p)
-print("sv")
