@@ -129,9 +129,9 @@ class KdTree_visualizer:
         vis.add_point([(p.point) for p in self.points])
         result = self._root._if_contains(point, vis)
         if visualize_gif:
-            self.vis.save_gif(filename=filename)
+            vis.save_gif(filename=filename)
         else:
-            self.vis.save(filename=filename)
+            vis.save(filename=filename)
         return result
     
     # find all points in the given rectangle
@@ -147,9 +147,9 @@ class KdTree_visualizer:
         vis.add_point([(p.point) for p in self.points])
         result = self._root._search_rectangle(rectangle, vis, self._points_in_node)
         if visualize_gif:
-            self.vis.save_gif(filename=filename)
+            vis.save_gif(filename=filename)
         else:
-            self.vis.save(filename=filename)
+            vis.save(filename=filename)
         if raw:
             return [point.point for point in result]
         return result
@@ -189,7 +189,7 @@ class KdTreeNode_v:
         vis.remove_figure(vis.add_polygon(self._rectangle.vertices2D, color="orange", alpha=0.3))
         if self._axis == None:
             if point == self._points[0]:
-                vis.add_point([point.point], color="green")
+                vis.add_point([point.point], color="lime")
             else:
                 vis.add_point([point.point], color="black")
             return point == self._points[0]
@@ -200,11 +200,11 @@ class KdTreeNode_v:
         
     def _add_leaves(self, vis, points_in_node=False):
         if points_in_node:
-            vis.add_point([(point.point) for point in self._points], color="black")
+            vis.add_point([(point.point) for point in self._points], color="lime")
             return self._points
         else:
             if self._axis is None:
-                vis.add_point([point.point for point in self._points], color="black")
+                vis.add_point([point.point for point in self._points], color="lime")
                 return self._points
             return self._left._add_leaves(vis) + self._right._add_leaves(vis)
         
@@ -212,7 +212,7 @@ class KdTreeNode_v:
     def _search_rectangle(self, area, vis, points_in_node=False):
         vis.remove_figure(vis.add_polygon(self._rectangle.vertices2D, color="orange", alpha=0.3))
         if self._axis is None:
-            vis.add_point([point for point in self._points if area.contains(point)], color="black")
+            vis.add_point([point for point in self._points if area.contains(point)], color="lime")
             return [point for point in self._points if area.contains(point)]
         if area.contains(self._rectangle):
             return self._add_leaves(vis, points_in_node)
