@@ -46,6 +46,8 @@ class KdTreeNode:
             self._points = points.copy()      # points in the node
         elif len(points) == 1:
             self._points = points             # leaf node
+        else:
+            self._points = []            
         self._points_in_node = points_in_node # bool if points are stored in the node
         self._left = None                     # left subtree [lower or equal to the axis]
         self._right = None                    # right subtree [greater than the axis]
@@ -152,7 +154,7 @@ class KdTree_visualizer:
             vis.save(filename=filename)
         if raw:
             return [point.point for point in result]
-        return result
+        return result, vis
 
 class KdTreeNode_v:
     def __init__(self, points, rectangle, vis, scene, depth=0, points_in_node=False):
@@ -162,7 +164,9 @@ class KdTreeNode_v:
             self._points = points.copy()      # points in the node
         elif len(points) == 1:
             self._points = points             # leaf node
-            vis.add_point([point.point for point in points], color="orange")  
+            vis.add_point([point.point for point in points], color="orange") 
+        else:
+            self._points = [] 
         self._points_in_node = points_in_node # bool if points are stored in the node
         self._left = None                     # left subtree [lower or equal to the axis]
         self._right = None                    # right subtree [greater than the axis]
