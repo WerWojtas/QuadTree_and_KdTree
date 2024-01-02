@@ -220,6 +220,3 @@ class KdTreeNode_v:
             return self._left._search_rectangle(area, vis, points_in_node) + self._right._search_rectangle(area, vis, points_in_node)
         return []
     
-
-from comparator.CaseGenerator import CaseGenerator
-v = KdTree_visualizer(CaseGenerator().grid_distribution((3, 3), Rectangle([0,0], [10,10])), points_in_node=False, visualize_gif=1)
