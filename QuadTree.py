@@ -232,7 +232,7 @@ class QuadTreeNode_v:
         vis.remove_figure(vis.add_polygon(self._rectangle.vertices2D, color="orange",alpha=0.3))
         if self._left_up is None:
             if point in self.points:
-                vis.add_point([point], color = "green")
+                vis.add_point([point], color = "lime")
                 return True
             else:
                 vis.add_point([point], color = "black")
@@ -265,7 +265,7 @@ class QuadTreeNode_v:
             my_set = set()
             for point in self.points:
                 if rectangle.contains(point):
-                    vis.add_point([point], color = "black")
+                    vis.add_point([point], color = "lime")
                     my_set.add(point) 
             return my_set
         if rectangle.contains(self._rectangle):
