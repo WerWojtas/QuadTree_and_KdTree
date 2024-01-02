@@ -1422,7 +1422,7 @@ punktów. Jest to przypadek neutralny, ponieważ punkty są równomiernie rozło
   \label{fig:uniform_graph}
 \end{figure}
 
-Na powyższym wykresie widać, że czas inicjalizacji struktur jest zbliżony, natomiast czas wyszukiwania punktów w strukturze KdTree jest znacznie krótszy niż w QuadTree.
+Na powyższym wykresie widać, że KdTree jest szybszye zarówno podczs konstrukcji, jak i przeszukiwania. Niestabilność widoczna na wykresie konstrukcji może zależeć od losowości tworzenia zbioru.
 
 \newpage
 \subsection{Zbiór punktów o rozkładzie normalnym}
@@ -1484,7 +1484,7 @@ Przeszukiwanym prostokątem jest prostokąt o wierzchołkach (25,25), (75,25), (
   \label{fig:normal_graph}
 \end{figure}
 
-Na powyższym wykresie widać, że tak jak poprzednio czas inicjalizacji struktur jest zbliżony oraz TODO czas wyszukiwania punktów w strukturze KdTree jest znacznie krótszy niż w QuadTree.
+Na powyższym wykresie widać, że tak jak poprzednio czas inicjalizacji struktur jest niemal identyczny, ale poczas przeszukiwania KdTree radzi sobie znacznie lepiej względem QuadTree.
 
 \newpage
 \subsection{Zbiór punktów o rozkładzie 'siatka'}
@@ -1546,7 +1546,7 @@ Zbiór ten jest problematyczny, ponieważ może zawierać wiele punktów na osi 
   \label{fig:grid_graph}
 \end{figure}
 TODO
-W tym przypadku widać odwrotną sytuację niż w poprzednich przypadkach, ponieważ czas inicjalizacji struktur jest szybszy w przypadku KdTree, a właśnie czas wyszukiwania punktów w strukturze jest zbliżony.
+W tym przypadku widać zbliżony czas zarówno inicjalizacji struktur, jaki i przeszukiwania do połowy zakresu porównania. Jedynie przy większej ilości punktów KdTree prezentuje się lepiej.
 
 \newpage
 \subsection{Zbiór punktów o rozkładzie klastrowym}
@@ -1610,7 +1610,9 @@ Dla tego przypadku obasz zawiera nieznaczne fragmenty dwóch skupisk punktów, i
   \label{fig:cluster_graph_1}
 \end{figure}
 
-TODOCzas konstrukcji drzewa Kd jest około 30\% szybszy, natomiast w przeszukiwaniu Quadtree działa zdecydowanie szybciej, co jest zapewne spowodowane szybszym "odcinaniem" poddrzew.
+Czas konstrukcji drzew jest niemalże identyczny dla tej samej liczby punktów, jedynie odchylenia pojawiają się przy największym zbiorze, co można uznać za błąd pomiarowy.
+
+Podczas przeszukiwania QuadTree osiągało zbliżone czasy, mimo większej ilości punktów, co oznacza, że sprawniej radziło sobie z przechodzeniem po odpowiednich węzłach.
 
 \newpage
 \subsubsection{Z dużą ilością punktów (2)}
@@ -1663,7 +1665,7 @@ Dla tego przypadku przeszukujemy obszar zawierający znaczne fragmenty dwóch sk
   \label{fig:cluster_graph_2}
 \end{figure}
 
-TODOW tym przypadku KdTree zarówno buduje się szybciej, jak i przeszukiwanie, wraz ze wzrosem liczby punktów jest znacznie szybsze niż QuadTree.
+W tym przypadku KdTree potrzebowało zdecydowanie więcej czasu na zbudownie pełnego drzewa, jednakże przy przeszukiwaniu zadanych obszarów, to ono poradziło sobie lepiej.
 
 \newpage
 \subsection{Zbiór punktów o rozkładzie z punktami odstającym}
@@ -1728,7 +1730,7 @@ W tej sytuacji przeszukiwany prostokąt nie zawiera centralnej grupy punktów, a
   \label{fig:outlier_graph_1}
 \end{figure}
 
-TODOPodobnie jak w przypadku z małą ilością punktów w rozkładzie klastrowym, KdTree buduje się szybciej, jednak w przeszukiwaniu QuadTree jest nieporównywalnie szybszy.
+Budowa obu drzew zajmuje mniej więcej tyle samo czasu z małą przewagą dla struktury KdTree w przypadku zbioru o liczebności 8000 - może to wynikać z wygenerowania wyjątkowo niewygodnego zbioru dla budowy struktury QuadTree). Czas przeszukiwania, jednak znacznie przeważa na korzyść drzewa ćwiartkowego.
 
 \newpage
 \subsubsection{Z dużą ilością punktów}
@@ -1781,7 +1783,7 @@ W tej sytuacji przeszukiwany obszar zawiera znaczną część centralnej grupy p
   \label{fig:outlier_graph_2}
 \end{figure}
 
-TODOPo raz kolejny, przy problemie zawierającym duże ilości punktów KdTree zarówno buduje się nieznacznie szybciej, jak i przeszukiwanie, wraz ze wzrosem liczby punktów jest znacznie szybsze niż QuadTree.
+Z wykresu możemy wywnioskować, że czasy budowy obu drzew nie różnią się zbytnio od siebie. Widać wartość odstającą dla zbioru 9, co potwierdza wrażliwość obu drzew na struktury danych. Czas przeszukiwania natomiast jest szybszy przy użyciu Kd-drzewa. Wykres przypomina nieco wykresy z początkowych podpunktów.
 
 \newpage
 \subsection{Zbiór punktów o rozkładzie krzyżowym}
@@ -1843,8 +1845,7 @@ Przeszukiwany obszar zawiera fragmenty obu prostych, co powoduje, że drzewo bę
   \label{fig:cross_graph}
 \end{figure}
 
-TODOPodczas budowy drzewa QuadTree czas diametralnie wzrósł w okolicach 70.000 punktów, KdTree buduje się znacznie szybciej. W przeszukiwaniu obie struktury zachowały się podobnie.
-
+Czas budowy QuadTree jest znacznie szybszy w tym przypadku, warto zauważyć, że czasy konstrukcji obu struktur w tym przypadku są funkcją liniową. Czas przeszukiwania jest również lepszy na korzyść QuadTre, dla dużej ilości punktów KdTree osiąga dużo większe wartości.
 \newpage
 \subsection{Zbiór punktów o rozkładzie na bokach prostokąta}
 Sytuacja podobna do poprzedniej, jednakże zagęszczamy problem w większej ilości miejsc.
@@ -1898,10 +1899,12 @@ Sytuacja podobna do poprzedniej, jednakże zagęszczamy problem w większej ilo�
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.5\textwidth]{resources/rectangle_graph.png}
+  \includegraphics[width=1\textwidth]{resources/rectangle_graph.png}
   \caption{Wykres porównujący wydajność QuadTree i KdTree dla zbioru punktów o rozkładzie prostokątnym.}
   \label{fig:rectangle_graph}
 \end{figure}
+Czas konstrukcji w tym przypadku jest większy dla QuadTree, widać również skoki wartości co udowadnia, że oba drzewa są wrażliwe na strukturę danych. Czas przeszukiwania natomiast jest względnie podobny z jedną większą różnicą przy zbiorze z 9000 punktów.
+
 
 \newpage
 \subsection{Porównanie efektywności QuadTree dla różnych wartości max\_capacity}
@@ -1947,9 +1950,13 @@ dużej ilości wymiarów nie warto używać struktury KDTree.
 Na podstawie testów przeprowadzonych dla wyżej przeanalizowanych zbiorów, możemy
 stwierdzić, że programy przez nas zaimplementowane działają prawidłowo i poprawnie wyznaczają podzbiór punktów należących do zadanej płaszczyzny. 
 
-Dla każdego z testowanych przypadków, czas konstruowania struktur był podobny (odpowiednio dla danej liczby punktów), jest to kolejnym argumentem poświadczającym o poprawności działania zaimplementowanych struktur. 
+Dla każdego z testowanych przypadków, czas konstruowania struktur był podobny, z wyłaczeniem przypadku krzyżowego. 
 
-Po rozpatrzeniu przeprowadzonych porównań możemy stwierdzić, że ...
+Jednak dla ważnego konspektu jakim jest wyszukiwanie punktów można określić, że dla zbiorów gęsto oraz średnio usianych, takich jak rozkłady jednolite, normalne, czy zawierające klastry, to KdTree będzie mocniejszym wyborem. 
+
+Sytuacja ma się z goła odmiennie dla zbiorów rzadkich oraz, gdy wiele punktów jest współliniowych,to drzewo ćwiartkowe wiedzie swój prym. Dzięki swojej strukturze, szybciej odcina puste węzły i zapewnia lepsze czasy.
+
+Mimo wszystko, gdy rozkład z jakim będziemy mieli do czynienia jest nieznany to lepszym wyborem będzie drzewo Kd.
 
 \newpage
 \section{Bibliografia}
