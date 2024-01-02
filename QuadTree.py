@@ -153,9 +153,9 @@ class QuadTree_visualizer:
         if self._root._rectangle.contains(point):
             contains_result = self._root._if_contains(point, vis)
             if visualize_gif:
-                self.vis.save_gif(filename=filename)
+                vis.save_gif(filename=filename)
             else:
-                self.vis.save(filename=filename)
+                vis.save(filename=filename)
             return contains_result
         else:
             return False
@@ -174,12 +174,12 @@ class QuadTree_visualizer:
             return []
         result = list(self._root._search_in_rectangle(area, vis, self._points_in_node))
         if visualize_gif:
-            self.vis.save_gif(filename=filename)
+            vis.save_gif(filename=filename)
         else:
-            self.vis.save(filename=filename)
+            vis.save(filename=filename)
         if raw:
             return [point.point for point in result]
-        return result
+        return result, vis
         
         
 
@@ -229,7 +229,7 @@ class QuadTreeNode_v:
             vis.add_point(points, color = "orange")
 
     def _if_contains(self, point, vis):
-        vis.remove_figure(vis.add_polygon(self._rectangle.vertices2D, color="orange",alpha=0.3))
+        vis.add_polygon(self._rectangle.vertices2D, color="orange",alpha=0.3)
         if self._left_up is None:
             if point in self.points:
                 vis.add_point([point], color = "lime")
@@ -248,16 +248,18 @@ class QuadTreeNode_v:
             return self._right_up._if_contains(point,vis)
     
     
-    def _add_leaves(self, points_in_node=False):
+    def _add_leaves(self, vis, points_in_node=False):
         if points_in_node:
+            vis.add_point([(point.point) for point in self.points], color="lime")
             return set(self.points)
         else:
             if self._left_down is None:
+                vis.add_point([point.point for point in self.points], color="lime")
                 return set(self.points)
-            return self._left_up._add_leaves() \
-                 | self._right_up._add_leaves() \
-                 | self._left_down._add_leaves() \
-                 | self._right_down._add_leaves()
+            return self._left_up._add_leaves(vis) \
+                 | self._right_up._add_leaves(vis) \
+                 | self._left_down._add_leaves(vis) \
+                 | self._right_down._add_leaves(vis)
         
     def _search_in_rectangle(self, rectangle, vis, points_in_node=False):
         if self._left_up is None:
@@ -269,7 +271,7 @@ class QuadTreeNode_v:
                     my_set.add(point) 
             return my_set
         if rectangle.contains(self._rectangle):
-            return self._add_leaves(points_in_node)
+            return self._add_leaves(vis,points_in_node)
         if rectangle.does_intersect(self._rectangle):
             return self._left_up._search_in_rectangle(rectangle, vis, points_in_node) \
                  | self._right_up._search_in_rectangle(rectangle, vis, points_in_node) \
