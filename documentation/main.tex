@@ -1069,7 +1069,7 @@ ktree.search_in_rectangle([0, 0, 2, 2])                           # ValueError
 ktree.search_in_rectangle(Rectangle([0, 0, 4], [2, 2, 3]))        # ValueError
 \end{lstlisting}
 
-\section{QuadTree_visualizer}
+\section{QuadTree\_visualizer}
 Klasa umożliwiająca wizualizację drzewa QuadTree.
 \subsection{Wizualizacja drzewa}
 Aby wizualizować drzewo należy utworzyć obiekt klasy QuadTree\_Visualizer, który przyjmuje listę punktów (obiektów klasy Point lub obiektów iterowalnych) jako argument oraz ewentualne modyfikatory. Zachowuje się tak jak wyżej opisana klasa QuadTree.
@@ -1116,7 +1116,7 @@ Qtree1 = QuadTree_Visualizer(points1, TODO)
 Qtree1.search_in_rectangle(Rectangle([0, 0], [2, 2]), title='QuadTree', filename='quadtree-search')
 \end{lstlisting}
 
-\section{KdTree_visualizer}
+\section{KdTree\_visualizer}
 Klasa umożliwiająca wizualizację operacji drzewa KdTree.
 \subsection{Wizualizacja drzewa}
 Zachowuje się tak jak wyżej opisana klasa KdTree. Przy tworzeniu obiektu zapisuje w folderze plik kdtree.gif z animacją tworzenia drzewa.
@@ -1189,6 +1189,14 @@ Porównanie wydajności struktur QuadTree i KdTree znajduje się w pliku $Compar
 \part{Sprawozdanie}
 \section{Wstęp teoretyczny}
 \subsection{Cel sprawozdania}
+Dane są punkty na płaszczyźnie określające prostokąt $P1(x1,y1)$, oraz $P2(x2,y2)$. Należy znaleźć zbiór punktów Q ze zbioru spełniających warunki:
+\begin{itemize}
+    \item $x_1 < q_x < x_2$
+    \item $y_1 < q_y < y_2$
+\end{itemize}
+
+Celem projektu było zaimplementowanie struktur, optymalizujących proces takiego wyszukiwania..
+
 Sprawozdania ma na celu rozwiązanie problemu przeszukiwania zbioru punktów, w celu znalezienia tych, które należą do zadanego przez nas obszaru. 
 Przedstawione zostaną podstawowe informacje o strukturach QuadTree oraz KdTree, a także opis ich implementacji oraz porównanie wydajności dla zróżnicowanych danych wejściowych.
 
@@ -1472,18 +1480,23 @@ Podobnie jak w przypadku z małą ilością punktów w rozkładzie klastrowym, K
 
 \newpage
 \section{Bibliografia}
+Implementacja poszczególnych struktur danych:
 \begin{itemize}
   \item QuadTree - Weronika Wojtas
   \item KdTree - Radosław Rolka
 \end{itemize}
+
+Źródła i inspiracje wykorzystane przy tworzeniu projektu:
 \begin{itemize}
-  \item Wykłady z Algorytmów Geometrycznych na 3 semestrze Informatyki AGH WI, prowadzone przez dr inż. Barbarę Głut.
+  \item Wykłady z Algorytmów Geometrycznych, prowadzone przez dr inż. Barbarę Głut, na 3 semestrze Informatyki AGH WI.
   \item \url{https://github.com/aghbit/Algorytmy-Geometryczne}
   \item \url{https://en.wikipedia.org/wiki/Quadtree}
   \item \url{https://en.wikipedia.org/wiki/K-d_tree}
   \item \url{https://en.wikipedia.org/wiki/Nearest_neighbor_search}
   \item \url{https://en.wikipedia.org/wiki/Range_searching}
   \item \url{https://www.agh.edu.pl/o-agh/multimedia/znak-graficzny-agh/}
+  \item \url{https://www.agh.edu.pl/fileadmin/default/templates/images/logo_pl_1.jpg}
+  \item \url{https://github.com/Goader/KDTree_QuadTree/tree/main} (przypadki testowe oraz struktury unifikujące)
 \end{itemize}
 
 \end{document}

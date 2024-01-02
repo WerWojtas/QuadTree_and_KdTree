@@ -109,8 +109,11 @@ class KdTree_visualizer:
         self.vis.add_title(title)
         self.vis.add_point([(p.point) for p in self.points])
         self.scene = {}
+        print("sv3")
         self._root = KdTreeNode_v(self.points, Rectangle.from_points(self.points), self.vis, self.scene, depth, points_in_node)
+        print("sv4")
         self.vis.save_gif(filename=filename)
+        print("sv")
         self._points_in_node = points_in_node
         self._dimension = len(points[0])
 
@@ -170,8 +173,8 @@ class KdTreeNode_v:
             self._axis = points[median][depth % len(points[median])]
             self.vis.add_line_segment([self._rectangle.opposite(points[median].point, depth%2)], color='blue')
             lr, rr = self._rectangle.divide(depth % len(self._rectangle), self._axis)
-            self._left = KdTreeNode_v(points[:median+1], lr, self.vis, self.scene, depth + 1, points_in_node)
-            self._right = KdTreeNode_v(points[median+1:], rr, self.vis, self.scene, depth + 1, points_in_node)
+            self._left = KdTreeNode_v([p for p in points if lr.contains(p)], lr, self.vis, self.scene, depth + 1, points_in_node)
+            self._right = KdTreeNode_v([p for p in points if not lr.contains(p)], rr, self.vis, self.scene, depth + 1, points_in_node)
 
     # check if the tree contains the point
     def _if_contains(self, point, vis):
@@ -208,3 +211,12 @@ class KdTreeNode_v:
         if area.does_intersect(self._rectangle):
             return self._left._search_rectangle(area, vis, points_in_node) + self._right._search_rectangle(area, vis, points_in_node)
         return []
+
+from comparator.CaseGenerator import CaseGenerator
+
+print("sv1")
+cg= CaseGenerator()
+p = cg.grid_distribution((10,10), Rectangle(Point([0,0]), Point([10,10])))
+print("sv2")
+a = KdTree_visualizer(p)
+print("sv")
