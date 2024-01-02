@@ -60,8 +60,8 @@ class KdTreeNode:
             median = (len(points)-1) // 2
             self._axis = points[median][depth % len(points[median])]
             lr, rr = self._rectangle.divide(depth % len(self._rectangle), self._axis)
-            self._left = KdTreeNode(points[:median+1], lr, depth + 1, points_in_node)
-            self._right = KdTreeNode(points[median+1:], rr, depth + 1, points_in_node)
+            self._left = KdTreeNode([p for p in points if lr.contains(p)], lr, depth + 1, points_in_node)
+            self._right = KdTreeNode([p for p in points if not lr.contains(p)], rr, depth + 1, points_in_node)
 
     # check if the tree contains the point
     def _if_contains(self, point):
@@ -97,26 +97,29 @@ from utilities.Rectangle import Rectangle
 from visualizer.main import Visualizer
 
 class KdTree_visualizer:
-    def __init__(self, points, depth=0, points_in_node=False, title="KdTree", filename="KdTree-construction"):
+    def __init__(self, points, depth=0, points_in_node=False, visualize_gif=True, title="KdTree", filename="KdTree-construction"):
         if len(points) == 0:
             raise ValueError("The list of points is empty.")
         if not all(len(point) == len(points[0]) for point in points):
             raise ValueError("The points have different dimensions.")
+        points = [Point(point) for point in points]
         if len(set(points)) != len(points):
             raise ValueError("The points are not unique.")
         self.points = [Point(point) for point in points]
         self.vis = Visualizer()
         self.vis.add_title(title)
         self.vis.add_point([(p.point) for p in self.points])
-        self.vis.add_polygon(Rectangle.from_points(self.points).vertices2D, color="blue", fill = False)
         self.scene = {}
         self._root = KdTreeNode_v(self.points, Rectangle.from_points(self.points), self.vis, self.scene, depth, points_in_node)
-        self.vis.save_gif(filename=filename)
+        if visualize_gif:
+            self.vis.save_gif(filename=filename)
+        else:
+            self.vis.save(filename=filename)
         self._points_in_node = points_in_node
         self._dimension = len(points[0])
 
     # check if the tree contains the point
-    def if_contains(self, point, title="KdTree", filename="KdTree-contains"):
+    def if_contains(self, point, visualize_gif=True, title="KdTree", filename="KdTree-contains"):
         if len(point) != self._dimension:
             raise ValueError("The point has different dimension than the points in the tree.")
         if not isinstance(point, Point):
@@ -125,11 +128,14 @@ class KdTree_visualizer:
         vis.add_title(title)
         vis.add_point([(p.point) for p in self.points])
         result = self._root._if_contains(point, vis)
-        vis.save_gif(filename=filename)
+        if visualize_gif:
+            self.vis.save_gif(filename=filename)
+        else:
+            self.vis.save(filename=filename)
         return result
     
     # find all points in the given rectangle
-    def search_in_rectangle(self, rectangle, raw=False, title="KdTree", filename="KdTree-search"):
+    def search_in_rectangle(self, rectangle, raw=False, visualize_gif=True, title="KdTree", filename="KdTree-search"):
         if not isinstance(rectangle, Rectangle):
             raise ValueError("The rectangle is not a Rectangle object.")
         if len(rectangle) != self._dimension:
@@ -140,7 +146,10 @@ class KdTree_visualizer:
         vis.add_line_segment([(ll,lr), (ll,ul), (ul,ur),(lr,ur)], color="red")
         vis.add_point([(p.point) for p in self.points])
         result = self._root._search_rectangle(rectangle, vis, self._points_in_node)
-        vis.save_gif(filename=filename)
+        if visualize_gif:
+            self.vis.save_gif(filename=filename)
+        else:
+            self.vis.save(filename=filename)
         if raw:
             return [point.point for point in result]
         return result
@@ -151,7 +160,6 @@ class KdTreeNode_v:
         self.scene = scene
         if points_in_node:
             self._points = points.copy()      # points in the node
-            vis.remove_figure(vis.add_point([point.point for point in points], color="orange"))
         elif len(points) == 1:
             self._points = points             # leaf node
             vis.add_point([point.point for point in points], color="orange")  
@@ -173,8 +181,8 @@ class KdTreeNode_v:
             self._axis = points[median][depth % len(points[median])]
             self.vis.add_line_segment([self._rectangle.opposite(points[median].point, depth%2)], color='blue')
             lr, rr = self._rectangle.divide(depth % len(self._rectangle), self._axis)
-            self._left = KdTreeNode_v(points[:median+1], lr, self.vis, self.scene, depth + 1, points_in_node)
-            self._right = KdTreeNode_v(points[median+1:], rr, self.vis, self.scene, depth + 1, points_in_node)
+            self._left = KdTreeNode_v([p for p in points if lr.contains(p)], lr, self.vis, self.scene, depth + 1, points_in_node)
+            self._right = KdTreeNode_v([p for p in points if not lr.contains(p)], rr, self.vis, self.scene, depth + 1, points_in_node)
 
     # check if the tree contains the point
     def _if_contains(self, point, vis):
@@ -211,3 +219,7 @@ class KdTreeNode_v:
         if area.does_intersect(self._rectangle):
             return self._left._search_rectangle(area, vis, points_in_node) + self._right._search_rectangle(area, vis, points_in_node)
         return []
+    
+
+from comparator.CaseGenerator import CaseGenerator
+v = KdTree_visualizer(CaseGenerator().grid_distribution((3, 3), Rectangle([0,0], [10,10])), points_in_node=False, visualize_gif=1)

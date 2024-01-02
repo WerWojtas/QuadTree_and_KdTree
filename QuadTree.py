@@ -143,7 +143,7 @@ class QuadTree_visualizer:
             self.vis.save(filename=filename)
         self._points_in_node = points_in_node
 
-    def if_contains(self,point, title="QuadTree", filename="QuadTree-contains"):
+    def if_contains(self,point, visualize_gif=True, title="QuadTree", filename="QuadTree-contains"):
         if len(point) != 2:
             raise ValueError("The point has different dimension than 2.")
         if not isinstance(point, Point):
@@ -152,12 +152,15 @@ class QuadTree_visualizer:
         vis.add_title(title)
         if self._root._rectangle.contains(point):
             contains_result = self._root._if_contains(point, vis)
-            vis.save_gif(filename=filename)
+            if visualize_gif:
+                self.vis.save_gif(filename=filename)
+            else:
+                self.vis.save(filename=filename)
             return contains_result
         else:
             return False
 
-    def search_in_rectangle(self, rectangle, raw = False, title="QuadTree", filename="QuadTree-search"):
+    def search_in_rectangle(self, rectangle, visualize_gif=True, raw = False, title="QuadTree", filename="QuadTree-search"):
         if not isinstance(rectangle, Rectangle):
             raise ValueError("The rectangle is not a Rectangle object.")
         if len(rectangle) != 2:
@@ -170,7 +173,10 @@ class QuadTree_visualizer:
         if area is None:
             return []
         result = list(self._root._search_in_rectangle(area, vis, self._points_in_node))
-        vis.save_gif(filename=filename)
+        if visualize_gif:
+            self.vis.save_gif(filename=filename)
+        else:
+            self.vis.save(filename=filename)
         if raw:
             return [point.point for point in result]
         return result
