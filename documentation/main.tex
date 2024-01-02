@@ -1315,7 +1315,7 @@ Służy do podziału dwuwymiarowej przestrzeni na mniejsze części, dzieląc je
 Węzeł naszego drzewa bedzie prostokątnym obszarem, który będzie reprezentował drzewo czwórkowe, a liście będą również prostokątnymi obszarami, które nie zostały podzielone ze względu na ilość punktów w danym obszarze.
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.5\textwidth]{quadtree.png}
+  \includegraphics[width=0.5\textwidth]{resources/quadtree.png}
   \caption{Przykładowe drzewo QuadTree.}
   \label{fig:quadtree}
 \end{figure}
@@ -1326,7 +1326,7 @@ Służy do podziału wielowymiarowej przestrzeni na mniejsze części, dzieląc 
 a następnie podzielone części na kolejne dwie części względem mediany, aż do momentu dotarcia do liścia, który będzie zawierał jeden punkt.
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.5\textwidth]{kdtree.png}
+  \includegraphics[width=0.5\textwidth]{resources/kdtree.jpg}
   \caption{Przykładowe drzewo KdTree.}
   \label{fig:kdtree}
 \end{figure}
@@ -1484,7 +1484,8 @@ Przeszukiwanym prostokątem jest prostokąt o wierzchołkach (25,25), (75,25), (
 
 Na powyższym wykresie widać, że tak jak poprzednio czas inicjalizacji struktur jest zbliżony oraz czas wyszukiwania punktów w strukturze KdTree jest znacznie krótszy niż w QuadTree.
 
-\subsection{Zbiór punktów o rozkładzie "siatka"}
+
+\subsection{Zbiór punktów o rozkładzie 'siatka'}
 Rozkład punktów przypomina siatkę, ponieważ punkty są równomiernie rozłożone wzdłuż osi X i Y wewnątrz zadanego prostokąta.
 Przeszukiwanym prostokąt jest prostokąt o wierzchołkach (25,25), (75,25), (75,75), (25,75).
 Zbiór ten jest problematyczny, ponieważ może zawierać wiele punktów na osi podziału, co może spowodować, że drzewo będzie niezrównoważone.
@@ -1955,7 +1956,7 @@ Implementacja poszczególnych struktur danych:
   \item \url{https://en.wikipedia.org/wiki/Nearest_neighbor_search}
   \item \url{https://en.wikipedia.org/wiki/Range_searching}
   \item \url{https://www.agh.edu.pl/o-agh/multimedia/znak-graficzny-agh/}
-  \item \url{https://github.com/Goader/KDTree_QuadTree/tree/main} (przypadki testowe oraz struktury unifikujące)
+  \item \url{https://github.com/Goader/KDTree_QuadTree/tree/main} (przypadki testowe)
 \end{itemize}
 
 \end{document}
