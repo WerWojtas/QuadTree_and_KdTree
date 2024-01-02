@@ -1298,13 +1298,13 @@ Porównanie wydajności struktur QuadTree i KdTree znajduje się w pliku $Compar
 \part{Sprawozdanie}
 \section{Wstęp teoretyczny}
 \subsection{Cel sprawozdania}
-Dane są punkty na płaszczyźnie określające prostokąt $P1(x1,y1)$, oraz $P2(x2,y2)$. Należy znaleźć zbiór punktów Q ze zbioru spełniających warunki:
+Dane są punkty na płaszczyźnie określające prostokąt $P1(x1,y1)$, oraz $P2(x2,y2)$. 
+
+Należy znaleźć zbiór punktów Q ze zbioru spełniających warunki:
 \begin{itemize}
     \item $x_1 < q_x < x_2$
     \item $y_1 < q_y < y_2$
 \end{itemize}
-
-Celem projektu było zaimplementowanie struktur, optymalizujących proces takiego wyszukiwania..
 
 Sprawozdania ma na celu rozwiązanie problemu przeszukiwania zbioru punktów, w celu znalezienia tych, które należą do zadanego przez nas obszaru. 
 Przedstawione zostaną podstawowe informacje o strukturach QuadTree oraz KdTree, a także opis ich implementacji oraz porównanie wydajności dla zróżnicowanych danych wejściowych.
@@ -1322,8 +1322,8 @@ Węzeł naszego drzewa bedzie prostokątnym obszarem, który będzie reprezentow
 
 \subsection{KdTree}
 KdTree jest strukturą danych będącą drzewem binarnym, która umożliwia przechowywanie punktów w wielowymiarowej przestrzeni.
-Służy do podziału wielowymiarowej przestrzeni na mniejsze części, dzieląc ją na dwie części względem punkt mediany względem danego wymiaru, 
-a następnie podzielone części na kolejne dwie części względem mediany, aż do momentu dotarcia do liścia, który będzie zawierał jeden punkt.
+Służy do podziału wielowymiarowej przestrzeni na mniejsze części, dzieląc ją na dwie części względem punkt mediany dla kolejnych wymiarów, 
+a następnie podzielone części na kolejne dwie części względem ich mediany, aż do momentu dotarcia do liścia, który będzie zawierał jeden punkt.
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.5\textwidth]{resources/kdtree.jpg}
@@ -1334,10 +1334,10 @@ a następnie podzielone części na kolejne dwie części względem mediany, aż
 \section{Opis implementacji}
 \subsection{QuadTree}
 Strukturę inicjuje się poprzez utworzenie obiektu klasy QuadTree, który przyjmuje listę punktów, które mają zostać dodane do drzewa.
-Wtedy w kolejnych węzłach punkty są dzielone na podstawie przynależności do danej ćwiartki i z utworzonego podzbioru tworzony jest kolejny węzeł, 
+Wtedy w kolejnych węzłach punkty są dzielone na podstawie przynależności do danej ćwiartki i z utworzonego podzbioru tworzony jest kolejny węzeł zawierający należące do niego punkty, 
 który powtarza operacje do momentu, w którym ilość punktów nie będzie przekraczać ustalonej wartości $max\_capacity$.
 
-W trakcie wyszukiwania zadanego punktu w drzewie, punkt przechodzi przez kolejne węzły w ten sam sposób jaki byłby dodawany do drzewa, aż do momentu dotarcia do liścia,
+W trakcie wyszukiwania zadanego punktu w drzewie, punkt przechodzi przez kolejne węzły w ten sam sposób jaki byłby dodawany do drzewa, a więc wchodzi do kolejnych węzłów, w których się zawiera, aż do momentu dotarcia do liścia,
 w którym następuje sprawdzenie czy punkt znajduje się w liściu.
 
 Podczas wyszukiwania punktów w prostokącie, sprawdzane są wszystkie węzły, które przecinają się z prostokątem, a następnie rekurencyjnie dochodzimy do liści,
@@ -1362,10 +1362,11 @@ Złożoność obliczeniowa utworzenia drzewa KD wynosi $O(kn*logn)$, gdzie $n$ t
 Porównania znajdują się w pliku $Comparision.ipynb$, zostały tam przedstawione wykresy oraz opis porównania wydajności struktur dla różnych danych wejściowych.
 wykorzystane zostały zbiory punktów wygenerowane przez klasę $CaseGenerator$ w zbiorach od 10000 do 100000 punktów z krokiem 10000 wewnątrz prostokąta o wierzchołkach (0,0), (100,0), (100,100), (0,100).
 Porównane zostały czasy inicjalizacji struktury oraz czasy wyszukiwania punktów w strukturze.
+\newpage
 \subsection{Zbiór punktów o rozkładzie jednorodnym}
 Zbiór reprezentujący losowo wygenerowane punkty w przestrzeni dwuwymiarowej należąych do danego prostokąta.
-Wyszukujemy punkty znajdujące się w prostokącie, który zawiera się w prostokącie, z którego zostały wygenerowane punkty.
-Jest to przypadek neutralny, ponieważ punkty są równomiernie rozłożone w przestrzeni.
+Wyszukujemy punkty znajdujące się w obszarze, który częściowo przecina nasz zbiór
+punktów. Jest to przypadek neutralny, ponieważ punkty są równomiernie rozłożone w przestrzeni.
 
 \begin{figure}[H]
   \centering
@@ -1379,13 +1380,13 @@ Jest to przypadek neutralny, ponieważ punkty są równomiernie rozłożone w pr
   \begin{minipage}{0.495\textwidth}
       \centering
       \includegraphics[width=1\textwidth]{resources/uniform_QuadTree.png}
-      \caption{Siatka QuadTree dla zbioru punktów o rozkładzie jednorodnym.}
+      \caption{Siatka QuadTree rozkładu jednorodnego.}
       \label{fig:uniform_QuadTree}
   \end{minipage}
   \begin{minipage}{0.495\textwidth}
       \centering
       \includegraphics[width=1\textwidth]{resources/uniform_KdTree.png}
-      \caption{Siatka KdTree dla zbioru punktów o rozkładzie jednorodnym.}
+      \caption{Siatka KdTree rozkładu jednorodnego.}
       \label{fig:uniform_KdTree}
   \end{minipage}
 \end{figure}
@@ -1398,31 +1399,32 @@ Jest to przypadek neutralny, ponieważ punkty są równomiernie rozłożone w pr
    &  & \multicolumn{2}{r}{Czas konstrukcji [s]} & \multicolumn{2}{r}{Czas przeszukiwania [s]} \\
    & Liczba punktów & KdTree & QuadTree & KdTree & QuadTree \\
   \midrule
-  1 & 10000 & 1.316899 & 0.322348 & 0.003542 & 0.008224 \\
-  2 & 20000 & 3.941724 & 0.841616 & 0.015632 & 0.021508 \\
-  3 & 30000 & 7.633515 & 1.541106 & 0.005485 & 0.010763 \\
-  4 & 40000 & 5.071100 & 1.040361 & 0.011017 & 0.017685 \\
-  5 & 50000 & 6.166682 & 1.688596 & 0.022337 & 0.038239 \\
-  6 & 60000 & 8.296504 & 1.488604 & 0.012958 & 0.019969 \\
-  7 & 70000 & 11.235509 & 3.383768 & 0.030724 & 0.053717 \\
-  8 & 80000 & 20.441513 & 4.665781 & 0.029368 & 0.062475 \\
-  9 & 90000 & 20.443294 & 3.668127 & 0.029316 & 0.066007 \\
-  10 & 100000 & 20.915952 & 4.817047 & 0.032204 & 0.059234 \\
+1 & 10000 & 0.525953 & 0.603661 & 0.006965 & 0.017502 \\
+2 & 20000 & 0.879578 & 1.301307 & 0.015709 & 0.031569 \\
+3 & 30000 & 1.833377 & 2.940357 & 0.035963 & 0.055741 \\
+4 & 40000 & 3.320225 & 3.408814 & 0.033606 & 0.052383 \\
+5 & 50000 & 4.035366 & 4.130799 & 0.036009 & 0.065693 \\
+6 & 60000 & 5.321494 & 5.128195 & 0.046706 & 0.071691 \\
+7 & 70000 & 6.319651 & 6.413196 & 0.056525 & 0.109037 \\
+8 & 80000 & 6.937868 & 7.912826 & 0.025324 & 0.065647 \\
+9 & 90000 & 3.682173 & 3.769052 & 0.026852 & 0.082187 \\
+10 & 100000 & 7.567008 & 8.679212 & 0.055804 & 0.140044 \\
   \bottomrule
 \end{tabular}
-\caption{Wyniki pomiarów porównujące wydajność QuadTree i KdTree dla zbioru punktów o rozkładzie jednorodnym.}
+\caption{Wyniki pomiarów porównujące wydajność QuadTree i KdTree dla zbioru rozkładu jednorodnego.}
 \label{tab:uniform_time}
 \end{table}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.5\textwidth]{resources/uniform_graph.png}
+  \includegraphics[width=1\textwidth]{resources/uniform_graph.png}
   \caption{Wykres porównujący wydajność QuadTree i KdTree dla zbioru punktów o rozkładzie jednorodnym.}
   \label{fig:uniform_graph}
 \end{figure}
 
 Na powyższym wykresie widać, że czas inicjalizacji struktur jest zbliżony, natomiast czas wyszukiwania punktów w strukturze KdTree jest znacznie krótszy niż w QuadTree.
 
+\newpage
 \subsection{Zbiór punktów o rozkładzie normalnym}
 Zbiór reprezentujący punkty wygenerowane zgodnie z rozkładem normalnym w przestrzeni dwuwymiarowej.
 Oznacza to, że punkty są bardziej skupione w środku prostokąta, a na brzegach jest ich mniej.
@@ -1440,13 +1442,13 @@ Przeszukiwanym prostokątem jest prostokąt o wierzchołkach (25,25), (75,25), (
   \begin{minipage}{0.495\textwidth}
       \centering
       \includegraphics[width=1\textwidth]{resources/normal_QuadTree.png}
-      \caption{Siatka QuadTree dla zbioru punktów o rozkładzie normalnym.}
+      \caption{Siatka QuadTree dla rozkładu normalnego.}
       \label{fig:normal_QuadTree}
   \end{minipage}
   \begin{minipage}{0.495\textwidth}
       \centering
       \includegraphics[width=1\textwidth]{resources/normal_KdTree.png}
-      \caption{Siatka KdTree dla zbioru punktów o rozkładzie normalnym.}
+      \caption{Siatka KdTree dla rozkładu normalnego.}
       \label{fig:normal_KdTree}
   \end{minipage}
 \end{figure}
@@ -1459,32 +1461,32 @@ Przeszukiwanym prostokątem jest prostokąt o wierzchołkach (25,25), (75,25), (
    &  & \multicolumn{2}{r}{Czas konstrukcji [s]} & \multicolumn{2}{r}{Czas przeszukiwania [s]} \\
    & Liczba punktów & KdTree & QuadTree & KdTree & QuadTree \\
   \midrule
-  1 & 10000 & 1.409536 & 0.658504 & 0.021233 & 0.027637 \\
-  2 & 20000 & 3.733727 & 0.849148 & 0.030970 & 0.049253 \\
-  3 & 30000 & 5.996684 & 1.060593 & 0.030387 & 0.071875 \\
-  4 & 40000 & 7.713361 & 1.494689 & 0.040819 & 0.086337 \\
-  5 & 50000 & 9.126856 & 1.239783 & 0.046445 & 0.086868 \\
-  6 & 60000 & 10.290875 & 1.521173 & 0.015405 & 0.089064 \\
-  7 & 70000 & 10.637535 & 1.526874 & 0.020134 & 0.057731 \\
-  8 & 80000 & 11.341654 & 2.199339 & 0.048359 & 0.187205 \\
-  9 & 90000 & 20.027573 & 4.296941 & 0.054425 & 0.156442 \\
-  10 & 100000 & 22.163904 & 5.303532 & 0.074022 & 0.206234 \\
+1 & 10000 & 0.739546 & 0.952264 & 0.027823 & 0.037308 \\
+2 & 20000 & 1.707641 & 1.774976 & 0.042721 & 0.078259 \\
+3 & 30000 & 2.229701 & 2.539679 & 0.042665 & 0.088242 \\
+4 & 40000 & 3.394858 & 3.609045 & 0.085345 & 0.124107 \\
+5 & 50000 & 4.173224 & 4.534599 & 0.063369 & 0.141578 \\
+6 & 60000 & 4.914829 & 5.526659 & 0.079745 & 0.199600 \\
+7 & 70000 & 6.192708 & 6.572183 & 0.091050 & 0.247608 \\
+8 & 80000 & 6.833023 & 7.734797 & 0.100284 & 0.349896 \\
+9 & 90000 & 7.688269 & 7.967488 & 0.103521 & 0.321787 \\
+10 & 100000 & 9.013417 & 9.272826 & 0.113198 & 0.334062 \\
   \bottomrule
   \end{tabular}
-\caption{Wyniki pomiarów porównujące wydajność QuadTree i KdTree dla zbioru punktów o rozkładzie normalnym.}
+\caption{Wyniki pomiarów porównujące wydajność QuadTree i KdTree dla rozkładu normalnego.}
 \label{tab:normal_time}
 \end{table}  
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.5\textwidth]{resources/normal_graph.png}
+  \includegraphics[width=1\textwidth]{resources/normal_graph.png}
   \caption{Wykres porównujący wydajność QuadTree i KdTree dla zbioru punktów o rozkładzie normalnym.}
   \label{fig:normal_graph}
 \end{figure}
 
-Na powyższym wykresie widać, że tak jak poprzednio czas inicjalizacji struktur jest zbliżony oraz czas wyszukiwania punktów w strukturze KdTree jest znacznie krótszy niż w QuadTree.
+Na powyższym wykresie widać, że tak jak poprzednio czas inicjalizacji struktur jest zbliżony oraz TODO czas wyszukiwania punktów w strukturze KdTree jest znacznie krótszy niż w QuadTree.
 
-
+\newpage
 \subsection{Zbiór punktów o rozkładzie 'siatka'}
 Rozkład punktów przypomina siatkę, ponieważ punkty są równomiernie rozłożone wzdłuż osi X i Y wewnątrz zadanego prostokąta.
 Przeszukiwanym prostokąt jest prostokąt o wierzchołkach (25,25), (75,25), (75,75), (25,75).
@@ -1502,13 +1504,13 @@ Zbiór ten jest problematyczny, ponieważ może zawierać wiele punktów na osi 
   \begin{minipage}{0.495\textwidth}
       \centering
       \includegraphics[width=1\textwidth]{resources/grid_QuadTree.png}
-      \caption{Siatka QuadTree dla zbioru punktów o rozkładzie "siatka".}
+      \caption{Siatka QuadTree dla rozkładu "siatka".}
       \label{fig:grid_QuadTree}
   \end{minipage}
   \begin{minipage}{0.495\textwidth}
       \centering
       \includegraphics[width=1\textwidth]{resources/grid_KdTree.png}
-      \caption{Siatka KdTree dla zbioru punktów o rozkładzie "siatka".}
+      \caption{Siatka KdTree dla rozkładu "siatka".}
       \label{fig:grid_KdTree}
   \end{minipage}
 \end{figure}
@@ -1521,33 +1523,34 @@ Zbiór ten jest problematyczny, ponieważ może zawierać wiele punktów na osi 
    &  & \multicolumn{2}{r}{Czas konstrukcji [s]} & \multicolumn{2}{r}{Czas przeszukiwania [s]} \\
    & Liczba punktów & KdTree & QuadTree & KdTree & QuadTree \\
   \midrule
-  1 & 10000 & 1.720876 & 0.432594 & 0.007004 & 0.010339 \\
-  2 & 20000 & 3.140780 & 0.860009 & 0.006487 & 0.010209 \\
-  3 & 30000 & 4.614301 & 0.912031 & 0.011742 & 0.009109 \\
-  4 & 40000 & 7.717551 & 1.994213 & 0.016462 & 0.025102 \\
-  5 & 50000 & 11.359418 & 2.318335 & 0.026332 & 0.029623 \\
-  6 & 60000 & 13.551666 & 2.893144 & 0.037946 & 0.040458 \\
-  7 & 70000 & 18.902871 & 3.822404 & 0.039945 & 0.041986 \\
-  8 & 80000 & 21.072672 & 4.679635 & 0.048774 & 0.053906 \\
-  9 & 90000 & 23.524562 & 5.073074 & 0.042934 & 0.047581 \\
-  10 & 100000 & 26.828852 & 5.723620 & 0.043702 & 0.050852 \\
+1 & 10000 & 0.760563 & 0.804475 & 0.017787 & 0.020623 \\
+2 & 20000 & 1.191172 & 1.315219 & 0.027098 & 0.030674 \\
+3 & 30000 & 1.830970 & 2.464700 & 0.027581 & 0.038512 \\
+4 & 40000 & 2.300369 & 3.230727 & 0.055203 & 0.071101 \\
+5 & 50000 & 3.731767 & 4.215484 & 0.038001 & 0.068557 \\
+6 & 60000 & 4.130582 & 5.627054 & 0.046119 & 0.053191 \\
+7 & 70000 & 4.493137 & 6.378847 & 0.057497 & 0.077872 \\
+8 & 80000 & 5.352753 & 7.442259 & 0.047987 & 0.083077 \\
+9 & 90000 & 5.616267 & 8.432021 & 0.049193 & 0.079609 \\
+10 & 100000 & 6.655318 & 9.113047 & 0.062163 & 0.091143 \\
   \bottomrule
   \end{tabular}
-\caption{Wyniki pomiarów porównujące wydajność QuadTree i KdTree dla zbioru punktów o rozkładzie "siatka".}
+\caption{Wyniki pomiarów porównujące wydajność QuadTree i KdTree dla rozkładu "siatka".}
 \label{tab:grid_time}
 \end{table}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.5\textwidth]{resources/grid_graph.png}
+  \includegraphics[width=1\textwidth]{resources/grid_graph.png}
   \caption{Wykres porównujący wydajność QuadTree i KdTree dla zbioru punktów o rozkładzie "siatka".}
   \label{fig:grid_graph}
 \end{figure}
+TODO
+W tym przypadku widać odwrotną sytuację niż w poprzednich przypadkach, ponieważ czas inicjalizacji struktur jest szybszy w przypadku KdTree, a właśnie czas wyszukiwania punktów w strukturze jest zbliżony.
 
-w tym przypadku widać odwrotną sytuację niż w poprzednich przypadkach, ponieważ czas inicjalizacji struktur jest szybszy w przypadku KdTree, a właśnie czas wyszukiwania punktów w strukturze jest zbliżony.
-
+\newpage
 \subsection{Zbiór punktów o rozkładzie klastrowym}
-Ten przypadek reprezentuje cztery grupy mocno skupionych punktów w przestrzeni dwuwymiarowej.
+Ten przypadek reprezentuje trzy grupy mocno skupionych punktów w przestrzeni dwuwymiarowej.
 Ze względu na niezrównoważone wybory prostokąta zedecydowano się na podział tego problemu na dwa przypadki, aby zobaczyć jak struktury zachowują się w odmiennych sytuacjach.
 
 \begin{figure}[H]
@@ -1558,20 +1561,20 @@ Ze względu na niezrównoważone wybory prostokąta zedecydowano się na podzia�
 \end{figure}
 
 \subsubsection{Z małą ilością punktów (1)}
-Dla tego przypadku prostokąt zawiera fragmenty dwóch skupisk punktów, co powoduje, że drzewo jest niezrównoważone.
+Dla tego przypadku obasz zawiera nieznaczne fragmenty dwóch skupisk punktów, i dominuje znaczna pusta przestrzeń,
 
 \begin{figure}[H]
   \centering
   \begin{minipage}{0.495\textwidth}
       \centering
       \includegraphics[width=1\textwidth]{resources/cluster_QuadTree_1.png}
-      \caption{Siatka QuadTree dla zbioru punktów o rozkładzie klastrowym (1).}
+      \caption{Siatka QuadTree dla rozkładu klaster (1).}
       \label{fig:cluster_QuadTree_1}
   \end{minipage}
   \begin{minipage}{0.495\textwidth}
       \centering
       \includegraphics[width=1\textwidth]{resources/cluster_KdTree_1.png}
-      \caption{Siatka KdTree dla zbioru punktów o rozkładzie klastrowym (1).}
+      \caption{Siatka KdTree dla rozkładu klaster (1).}
       \label{fig:cluster_KdTree_1}
   \end{minipage}
 \end{figure}
@@ -1584,46 +1587,47 @@ Dla tego przypadku prostokąt zawiera fragmenty dwóch skupisk punktów, co powo
    &  & \multicolumn{2}{r}{Czas konstrukcji [s]} & \multicolumn{2}{r}{Czas przeszukiwania [s]} \\
    & Liczba punktów & KdTree & QuadTree & KdTree & QuadTree \\
   \midrule
-  1 & 10000 & 2.446781 & 0.542375 & 0.014582 & 0.003142 \\
-  2 & 20000 & 4.485252 & 1.019154 & 0.019919 & 0.004270 \\
-  3 & 30000 & 6.476151 & 1.562998 & 0.033136 & 0.006302 \\
-  4 & 40000 & 8.984185 & 2.180122 & 0.038987 & 0.008103 \\
-  5 & 50000 & 11.655003 & 2.647769 & 0.033785 & 0.008614 \\
-  6 & 60000 & 14.115910 & 3.248775 & 0.038273 & 0.007712 \\
-  7 & 70000 & 15.494794 & 118.505920 & 0.022966 & 0.003751 \\
-  8 & 80000 & 10.453163 & 1.747094 & 0.017566 & 0.005866 \\
-  9 & 90000 & 8.852059 & 1.695296 & 0.013215 & 0.003354 \\
-  10 & 100000 & 8.283150 & 1.897842 & 0.014277 & 0.003467 \\
+1 & 10000 & 0.744485 & 1.146938 & 0.019429 & 0.004075 \\
+2 & 20000 & 1.384678 & 1.626412 & 0.045429 & 0.007739 \\
+3 & 30000 & 2.832320 & 2.930801 & 0.034926 & 0.008536 \\
+4 & 40000 & 3.370394 & 4.088355 & 0.044638 & 0.009340 \\
+5 & 50000 & 4.737663 & 3.483118 & 0.026201 & 0.008898 \\
+6 & 60000 & 6.363855 & 6.455460 & 0.054979 & 0.011443 \\
+7 & 70000 & 5.795496 & 6.191663 & 0.086012 & 0.012112 \\
+8 & 80000 & 6.720413 & 6.898166 & 0.058796 & 0.010809 \\
+9 & 90000 & 7.459068 & 7.749592 & 0.061746 & 0.014384 \\
+10 & 100000 & 13.345561 & 6.145183 & 0.054499 & 0.008764 \\
   \bottomrule
   \end{tabular}
-\caption{Wyniki pomiarów porównujące wydajność QuadTree i KdTree dla zbioru punktów o rozkładzie klastrowym (1).}
+\caption{Wyniki pomiarów porównujące wydajność QuadTree i KdTree dla rozkładu klaster (1).}
 \label{tab:cluster_time_1}
 \end{table}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.5\textwidth]{resources/cluster_graph_1.png}
-  \caption{Wykres porównujący wydajność QuadTree i KdTree dla zbioru punktów o rozkładzie klastrowym (1).}
+  \includegraphics[width=1\textwidth]{resources/cluster_graph_1.png}
+  \caption{Wykres porównujący wydajność QuadTree i KdTree dla rozkładu klaster (1).}
   \label{fig:cluster_graph_1}
 \end{figure}
 
-Czas konstrukcji drzewa Kd jest około 30\% szybszy, natomiast w przeszukiwaniu Quadtree działa zdecydowanie szybciej, co jest zapewne spowodowane szybszym "odcinaniem" poddrzew.
+TODOCzas konstrukcji drzewa Kd jest około 30\% szybszy, natomiast w przeszukiwaniu Quadtree działa zdecydowanie szybciej, co jest zapewne spowodowane szybszym "odcinaniem" poddrzew.
 
+\newpage
 \subsubsection{Z dużą ilością punktów (2)}
-Dla tego przypadku przeszukujemy prostokąt zawierający znaczne fragmenty 3 skupisk punktów.
+Dla tego przypadku przeszukujemy obszar zawierający znaczne fragmenty dwóch skupisk punktów.
 
 \begin{figure}[H]
   \centering
   \begin{minipage}{0.495\textwidth}
       \centering
       \includegraphics[width=1\textwidth]{resources/cluster_QuadTree_2.png}
-      \caption{Siatka QuadTree dla zbioru punktów o rozkładzie klastrowym (2).}
+      \caption{Siatka QuadTree dla rozkładu klastrowego (2).}
       \label{fig:cluster_QuadTree_2}
   \end{minipage}
   \begin{minipage}{0.495\textwidth}
       \centering
       \includegraphics[width=1\textwidth]{resources/cluster_KdTree_2.png}
-      \caption{Siatka KdTree dla zbioru punktów o rozkładzie klastrowym (2).}
+      \caption{Siatka KdTree dla rozkładu klastrowego (2).}
       \label{fig:cluster_KdTree_2}
   \end{minipage}
 \end{figure}
@@ -1636,33 +1640,35 @@ Dla tego przypadku przeszukujemy prostokąt zawierający znaczne fragmenty 3 sku
    &  & \multicolumn{2}{r}{Czas konstrukcji [s]} & \multicolumn{2}{r}{Czas przeszukiwania [s]} \\
    & Liczba punktów & KdTree & QuadTree & KdTree & QuadTree \\
   \midrule
-  1 & 10000 & 0.702604 & 0.175705 & 0.005674 & 0.003468 \\
-  2 & 20000 & 1.459559 & 0.502770 & 0.005346 & 0.006356 \\
-  3 & 30000 & 2.172730 & 0.512109 & 0.006725 & 0.009313 \\
-  4 & 40000 & 2.798538 & 0.673465 & 0.008505 & 0.011747 \\
-  5 & 50000 & 3.540902 & 0.848512 & 0.009716 & 0.014651 \\
-  6 & 60000 & 5.668305 & 1.576538 & 0.010884 & 0.022032 \\
-  7 & 70000 & 5.424441 & 1.189972 & 0.012015 & 0.022575 \\
-  8 & 80000 & 6.590360 & 1.404016 & 0.034221 & 0.047655 \\
-  9 & 90000 & 7.921871 & 1.584958 & 0.014074 & 0.029784 \\
-  10 & 100000 & 7.772472 & 1.754227 & 0.016303 & 0.039837 \\
+1 & 10000 & 0.332947 & 0.379944 & 0.011154 & 0.009497 \\
+2 & 20000 & 0.796904 & 0.860786 & 0.037727 & 0.051893 \\
+3 & 30000 & 1.849791 & 1.823151 & 0.023719 & 0.033841 \\
+4 & 40000 & 1.731005 & 1.727538 & 0.019790 & 0.028582 \\
+5 & 50000 & 2.212551 & 2.230030 & 0.020901 & 0.036624 \\
+6 & 60000 & 2.680116 & 2.618285 & 0.037243 & 0.091985 \\
+7 & 70000 & 3.694794 & 3.129360 & 0.095646 & 0.086734 \\
+8 & 80000 & 3.436740 & 3.804738 & 0.036856 & 0.069029 \\
+9 & 90000 & 4.169493 & 4.244927 & 0.033543 & 0.078159 \\
+10 & 100000 & 4.692992 & 4.678534 & 0.033104 & 0.101984 \\
   \bottomrule
   \end{tabular}
-\caption{Wyniki pomiarów porównujące wydajność QuadTree i KdTree dla zbioru punktów o rozkładzie klastrowym (2).}
+\caption{Wyniki pomiarów porównujące wydajność QuadTree i KdTree dla rozkładu klastrowego (2).}
 \label{tab:cluster_time_2}
 \end{table}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.5\textwidth]{resources/cluster_graph_2.png}
-  \caption{Wykres porównujący wydajność QuadTree i KdTree dla zbioru punktów o rozkładzie klastrowym (2).}
+  \includegraphics[width=1\textwidth]{resources/cluster_graph_2.png}
+  \caption{Wykres porównujący wydajność QuadTree i KdTree dla rozkładu klastrowego (2).}
   \label{fig:cluster_graph_2}
 \end{figure}
 
-W tym przypadku KdTree zarówno buduje się szybciej, jak i przeszukiwanie, wraz ze wzrosem liczby punktów jest znacznie szybsze niż QuadTree.
+TODOW tym przypadku KdTree zarówno buduje się szybciej, jak i przeszukiwanie, wraz ze wzrosem liczby punktów jest znacznie szybsze niż QuadTree.
 
+\newpage
 \subsection{Zbiór punktów o rozkładzie z punktami odstającym}
 W tym przypadku mamy podobną sytuację co w rozkładzie normalnym, jednakże centrum prostokąta jest znacznie bardziej zagęszczone, a pojedyncze punkty znajdują się na obrzeżach prostokąta.
+
 Również i tutaj zdecydowano się na podział tego problemu na dwa przypadki, aby zobaczyć jak struktury zachowują się w odmiennych sytuacjach.
 
 \begin{figure}[H]
@@ -1680,13 +1686,13 @@ W tej sytuacji przeszukiwany prostokąt nie zawiera centralnej grupy punktów, a
   \begin{minipage}{0.495\textwidth}
       \centering
       \includegraphics[width=1\textwidth]{resources/outlier_QuadTree_1.png}
-      \caption{Siatka QuadTree dla zbioru punktów o rozkładzie z punktami odstającymi (1).}
+      \caption{Siatka QuadTree dla rozkładu odstającego (1).}
       \label{fig:outlier_QuadTree_1}
   \end{minipage}
   \begin{minipage}{0.495\textwidth}
       \centering
       \includegraphics[width=1\textwidth]{resources/outlier_KdTree_1.png}
-      \caption{Siatka KdTree dla zbioru punktów o rozkładzie z punktami odstającymi (1).}
+      \caption{Siatka KdTree dla rozkładu odstającego  (1).}
       \label{fig:outlier_KdTree_1}
   \end{minipage}
 \end{figure}
@@ -1699,46 +1705,47 @@ W tej sytuacji przeszukiwany prostokąt nie zawiera centralnej grupy punktów, a
    &  & \multicolumn{2}{r}{Czas konstrukcji [s]} & \multicolumn{2}{r}{Czas przeszukiwania [s]} \\
    & Liczba punktów & KdTree & QuadTree & KdTree & QuadTree \\
   \midrule
-  1 & 10000 & 0.717927 & 0.177072 & 0.005007 & 0.000388 \\
-  2 & 20000 & 1.449858 & 0.350434 & 0.006570 & 0.000274 \\
-  3 & 30000 & 2.279531 & 0.528863 & 0.003527 & 0.000197 \\
-  4 & 40000 & 3.268407 & 0.735630 & 0.004238 & 0.000189 \\
-  5 & 50000 & 3.659167 & 0.844374 & 0.004534 & 0.000128 \\
-  6 & 60000 & 4.703288 & 1.068492 & 0.006411 & 0.000282 \\
-  7 & 70000 & 5.641021 & 1.519039 & 0.006351 & 0.000158 \\
-  8 & 80000 & 8.751554 & 1.832105 & 0.006036 & 0.000298 \\
-  9 & 90000 & 10.474423 & 2.043283 & 0.007907 & 0.000216 \\
-  10 & 100000 & 8.186703 & 1.833491 & 0.006716 & 0.000194 \\
+ 1 & 10000 & 0.489375 & 0.524964 & 0.004784 & 0.000502 \\
+2 & 20000 & 1.154447 & 1.115454 & 0.014153 & 0.000350 \\
+3 & 30000 & 1.546494 & 1.476078 & 0.009427 & 0.000544 \\
+4 & 40000 & 1.533275 & 1.927339 & 0.014799 & 0.000809 \\
+5 & 50000 & 2.083945 & 2.201441 & 0.010279 & 0.000359 \\
+6 & 60000 & 2.967560 & 2.735626 & 0.022038 & 0.000294 \\
+7 & 70000 & 3.082076 & 3.363270 & 0.013432 & 0.000267 \\
+8 & 80000 & 3.217827 & 5.419607 & 0.018007 & 0.000354 \\
+9 & 90000 & 4.329930 & 4.179824 & 0.020457 & 0.000221 \\
+10 & 100000 & 4.419229 & 4.760538 & 0.018829 & 0.000348 \\
   \bottomrule
   \end{tabular}
-\caption{Wyniki pomiarów porównujące wydajność QuadTree i KdTree dla zbioru punktów o rozkładzie z punktami odstającymi (1).}
+\caption{Wyniki pomiarów porównujące wydajność QuadTree i KdTree rozkładu odstającego (1).}
 \label{tab:outlier_time_1}
 \end{table}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.5\textwidth]{resources/outlier_graph_1.png}
-  \caption{Wykres porównujący wydajność QuadTree i KdTree dla zbioru punktów o rozkładzie z punktami odstającymi (1).}
+  \includegraphics[width=1\textwidth]{resources/outlier_graph_1.png}
+  \caption{Wykres porównujący wydajność QuadTree i KdTree dla rozkładu odstającego (1).}
   \label{fig:outlier_graph_1}
 \end{figure}
 
-Podobnie jak w przypadku z małą ilością punktów w rozkładzie klastrowym, KdTree buduje się szybciej, jednak w przeszukiwaniu QuadTree jest nieporównywalnie szybszy.
+TODOPodobnie jak w przypadku z małą ilością punktów w rozkładzie klastrowym, KdTree buduje się szybciej, jednak w przeszukiwaniu QuadTree jest nieporównywalnie szybszy.
 
+\newpage
 \subsubsection{Z dużą ilością punktów}
-W tej sytuacji przeszukiwany prostokąt zawiera znaczną część centralnej grupy punktów, a także pojedyncze punkty odstające.
+W tej sytuacji przeszukiwany obszar zawiera znaczną część centralnej grupy punktów, a także pojedyncze punkty odstające.
 
 \begin{figure}[H]
   \centering
   \begin{minipage}{0.495\textwidth}
       \centering
       \includegraphics[width=1\textwidth]{resources/outlier_QuadTree_2.png}
-      \caption{Siatka QuadTree dla zbioru punktów o rozkładzie z punktami odstającymi (2).}
+      \caption{Siatka QuadTree dla rozkładu odstającego (2).}
       \label{fig:outlier_QuadTree_2}
   \end{minipage}
   \begin{minipage}{0.495\textwidth}
       \centering
       \includegraphics[width=1\textwidth]{resources/outlier_KdTree_2.png}
-      \caption{Siatka KdTree dla zbioru punktów o rozkładzie z punktami odstającymi (2).}
+      \caption{Siatka KdTree dla rozkładu odstającego (2).}
       \label{fig:outlier_KdTree_2}
   \end{minipage}
 \end{figure}
@@ -1751,39 +1758,41 @@ W tej sytuacji przeszukiwany prostokąt zawiera znaczną część centralnej gru
    &  & \multicolumn{2}{r}{Czas konstrukcji [s]} & \multicolumn{2}{r}{Czas przeszukiwania [s]} \\
    & Liczba punktów & KdTree & QuadTree & KdTree & QuadTree \\
   \midrule
-  1 & 10000 & 0.778634 & 0.178186 & 0.004800 & 0.007293 \\
-  2 & 20000 & 1.637092 & 0.372046 & 0.007771 & 0.010575 \\
-  3 & 30000 & 4.560106 & 0.633025 & 0.013264 & 0.020942 \\
-  4 & 40000 & 3.631306 & 0.976693 & 0.008758 & 0.015971 \\
-  5 & 50000 & 3.724992 & 0.871756 & 0.010161 & 0.021233 \\
-  6 & 60000 & 5.950017 & 2.218236 & 0.011169 & 0.026129 \\
-  7 & 70000 & 7.306792 & 1.643296 & 0.022056 & 0.031093 \\
-  8 & 80000 & 9.560833 & 1.630721 & 0.013338 & 0.034295 \\
-  9 & 90000 & 7.923755 & 1.827726 & 0.015465 & 0.044595 \\
-  10 & 100000 & 11.153876 & 1.907121 & 0.020115 & 0.048549 \\
+1 & 10000 & 0.392502 & 0.392262 & 0.019904 & 0.035270 \\
+2 & 20000 & 0.725716 & 0.889906 & 0.014218 & 0.022862 \\
+3 & 30000 & 1.438910 & 1.690897 & 0.015602 & 0.028825 \\
+4 & 40000 & 1.543269 & 1.709909 & 0.036825 & 0.069247 \\
+5 & 50000 & 3.925621 & 3.695152 & 0.042901 & 0.101671 \\
+6 & 60000 & 5.170620 & 6.477736 & 0.025804 & 0.074978 \\
+7 & 70000 & 3.204646 & 3.253412 & 0.032528 & 0.075253 \\
+8 & 80000 & 3.257927 & 3.435762 & 0.034024 & 0.090642 \\
+9 & 90000 & 3.725386 & 3.910516 & 0.039311 & 0.109010 \\
+10 & 100000 & 4.184204 & 4.359409 & 0.041051 & 0.125713 \\
   \bottomrule
   \end{tabular}
-\caption{Wyniki pomiarów porównujące wydajność QuadTree i KdTree dla zbioru punktów o rozkładzie z punktami odstającymi (2).}
+\caption{Wyniki pomiarów porównujące wydajność QuadTree i KdTree dla rozkładu odstającego (2).}
 \label{tab:outlier_time_2}
 \end{table}  
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.5\textwidth]{resources/outlier_graph_2.png}
-  \caption{Wykres porównujący wydajność QuadTree i KdTree dla zbioru punktów o rozkładzie z punktami odstającymi (2).}
+  \includegraphics[width=1\textwidth]{resources/outlier_graph_2.png}
+  \caption{Wykres porównujący wydajność QuadTree i KdTree dla rozkładu odstającego (2).}
   \label{fig:outlier_graph_2}
 \end{figure}
 
-Po raz kolejny, przy problemie zawierającym duże ilości punktów KdTree zarówno buduje się nieznacznie szybciej, jak i przeszukiwanie, wraz ze wzrosem liczby punktów jest znacznie szybsze niż QuadTree.
+TODOPo raz kolejny, przy problemie zawierającym duże ilości punktów KdTree zarówno buduje się nieznacznie szybciej, jak i przeszukiwanie, wraz ze wzrosem liczby punktów jest znacznie szybsze niż QuadTree.
 
-\subsection{Zbiór punktów o rozkładzie na osiach symetrii}
-W tym przypadku mamy podobną sytuację co w rozkładzie "siatka", jednakże punkty są równomiernie rozłożone wzdłuż osi symetrii prostokąta, a więc wiele punktów jest współliniowych.
+\newpage
+\subsection{Zbiór punktów o rozkładzie krzyżowym}
+W tym przypadku mamy podobną sytuację co w rozkładzie "siatka", jednakże punkty są równomiernie rozłożone wzdłuż osi symetrii prostokąta, a więc znacznie więcej punktów jest współliniowych.
+
 Przeszukiwany obszar zawiera fragmenty obu prostych, co powoduje, że drzewo będzie musiało pokonać znacznie większą głębokość, aby znaleźć wszystkie punkty.
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.5\textwidth]{resources/cross.png}
-  \caption{Zbiór punktów o rozkładzie na osiach symetrii.}
+  \caption{Zbiór punktów o rozkładzie krzyżowym.}
   \label{fig:cross}
 \end{figure}
 
@@ -1792,13 +1801,13 @@ Przeszukiwany obszar zawiera fragmenty obu prostych, co powoduje, że drzewo bę
   \begin{minipage}{0.495\textwidth}
       \centering
       \includegraphics[width=1\textwidth]{resources/cross_QuadTree.png}
-      \caption{Siatka QuadTree dla zbioru punktów o rozkładzie na osiach symetrii.}
+      \caption{Siatka QuadTree dla rozkładu krzyżowego.}
       \label{fig:cross_QuadTree}
   \end{minipage}
   \begin{minipage}{0.495\textwidth}
       \centering
       \includegraphics[width=1\textwidth]{resources/cross_KdTree.png}
-      \caption{Siatka KdTree dla zbioru punktów o rozkładzie na osiach symetrii.}
+      \caption{Siatka KdTree dla rozkładu krzyżowego.}
       \label{fig:cross_KdTree}
   \end{minipage}
 \end{figure}
@@ -1811,37 +1820,39 @@ Przeszukiwany obszar zawiera fragmenty obu prostych, co powoduje, że drzewo bę
    &  & \multicolumn{2}{r}{Czas konstrukcji [s]} & \multicolumn{2}{r}{Czas przeszukiwania [s]} \\
    & Liczba punktów & KdTree & QuadTree & KdTree & QuadTree \\
   \midrule
-  1 & 10000 & 1.697037 & 0.347310 & 0.036943 & 0.002493 \\
-  2 & 20000 & 3.649355 & 1.043554 & 0.045104 & 0.003989 \\
-  3 & 30000 & 3.846868 & 0.891714 & 0.075093 & 0.010739 \\
-  4 & 40000 & 5.524882 & 1.148535 & 0.112883 & 0.009405 \\
-  5 & 50000 & 6.826050 & 1.473822 & 0.153560 & 0.011540 \\
-  6 & 60000 & 8.711401 & 1.890979 & 0.138858 & 0.015453 \\
-  7 & 70000 & 13.481991 & 5.008504 & 0.325673 & 0.035281 \\
-  8 & 80000 & 22.523738 & 3.694172 & 0.192747 & 0.029239 \\
-  9 & 90000 & 18.519528 & 2.652618 & 0.302310 & 0.019012 \\
-  10 & 100000 & 17.951949 & 5.572457 & 0.266946 & 0.031648 \\
+ 1 & 10000 & 0.352320 & 0.828095 & 0.019195 & 0.010147 \\
+2 & 20000 & 0.932730 & 1.604570 & 0.027632 & 0.013407 \\
+3 & 30000 & 1.251809 & 4.130071 & 0.056319 & 0.048069 \\
+4 & 40000 & 2.510517 & 6.102843 & 0.045348 & 0.029465 \\
+5 & 50000 & 3.323393 & 7.474479 & 0.025906 & 0.031376 \\
+6 & 60000 & 1.975971 & 5.418630 & 0.033230 & 0.042832 \\
+7 & 70000 & 2.326260 & 4.737657 & 0.042741 & 0.037731 \\
+8 & 80000 & 2.736304 & 5.495954 & 0.038266 & 0.049964 \\
+9 & 90000 & 3.156827 & 6.273638 & 0.044632 & 0.052923 \\
+10 & 100000 & 3.848184 & 9.214811 & 0.054329 & 0.067162 \\
   \bottomrule
   \end{tabular}
-\caption{Wyniki pomiarów porównujące wydajność QuadTree i KdTree dla zbioru punktów o rozkładzie na osiach symetrii.}
+\caption{Wyniki pomiarów porównujące wydajność QuadTree i KdTree dla rozkładu krzyżowego.}
 \label{tab:cross_time}
 \end{table}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.5\textwidth]{resources/cross_graph.png}
-  \caption{Wykres porównujący wydajność QuadTree i KdTree dla zbioru punktów o rozkładzie na osiach symetrii.}
+  \includegraphics[width=1\textwidth]{resources/cross_graph.png}
+  \caption{Wykres porównujący wydajność QuadTree i KdTree dla rozkładu krzyżowego.}
   \label{fig:cross_graph}
 \end{figure}
 
-Podczas budowy drzewa QuadTree czas diametralnie wzrósł w okolicach 70.000 punktów, KdTree buduje się znacznie szybciej. W przeszukiwaniu obie struktury zachowały się podobnie.
+TODOPodczas budowy drzewa QuadTree czas diametralnie wzrósł w okolicach 70.000 punktów, KdTree buduje się znacznie szybciej. W przeszukiwaniu obie struktury zachowały się podobnie.
 
+\newpage
 \subsection{Zbiór punktów o rozkładzie na bokach prostokąta}
+Sytuacja podobna do poprzedniej, jednakże zagęszczamy problem w większej ilości miejsc.
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.5\textwidth]{resources/rectangle.png}
-  \caption{Zbiór punktów o rozkładzie na bokach prostokąta.}
+  \caption{Zbiór punktów o rozkładzie prostokątnym.}
   \label{fig:rectangle}
 \end{figure}
 
@@ -1850,13 +1861,13 @@ Podczas budowy drzewa QuadTree czas diametralnie wzrósł w okolicach 70.000 pun
   \begin{minipage}{0.495\textwidth}
       \centering
       \includegraphics[width=1\textwidth]{resources/rectangle_QuadTree.png}
-      \caption{Siatka QuadTree dla zbioru punktów o rozkładzie na bokach prostokąta.}
+      \caption{Siatka QuadTree dla zbioru punktów o rozkładzie prostokątnym.}
       \label{fig:rectangle_QuadTree}
   \end{minipage}
   \begin{minipage}{0.495\textwidth}
       \centering
       \includegraphics[width=1\textwidth]{resources/rectangle_KdTree.png}
-      \caption{Siatka KdTree dla zbioru punktów o rozkładzie na bokach prostokąta.}
+      \caption{Siatka KdTree dla zbioru punktów o rozkładzie prostokątnym.}
       \label{fig:rectangle_KdTree}
   \end{minipage}
 \end{figure}
@@ -1869,16 +1880,16 @@ Podczas budowy drzewa QuadTree czas diametralnie wzrósł w okolicach 70.000 pun
    &  & \multicolumn{2}{r}{Czas konstrukcji [s]} & \multicolumn{2}{r}{Czas przeszukiwania [s]} \\
    & Liczba punktów & KdTree & QuadTree & KdTree & QuadTree \\
   \midrule
-  1 & 10000 & 1.819258 & 0.341592 & 0.014448 & 0.001301 \\
-  2 & 20000 & 3.316440 & 0.782206 & 0.063590 & 0.002373 \\
-  3 & 30000 & 6.333150 & 1.450542 & 0.073386 & 0.002828 \\
-  4 & 40000 & 6.119170 & 1.438858 & 0.114555 & 0.004077 \\
-  5 & 50000 & 8.226338 & 1.932397 & 0.138671 & 0.009477 \\
-  6 & 60000 & 10.328547 & 2.147179 & 0.168265 & 0.005709 \\
-  7 & 70000 & 14.009313 & 2.894891 & 0.139490 & 0.007143 \\
-  8 & 80000 & 13.576895 & 3.206644 & 0.001359 & 0.007483 \\
-  9 & 90000 & 14.520083 & 3.644671 & 0.000798 & 0.009332 \\
-  10 & 100000 & 16.767747 & 3.578784 & 0.282632 & 0.012727 \\
+ 1 & 10000 & 0.375075 & 0.649978 & 0.007469 & 0.002012 \\
+2 & 20000 & 0.610409 & 1.282686 & 0.005383 & 0.003395 \\
+3 & 30000 & 0.946753 & 2.131414 & 0.017567 & 0.015938 \\
+4 & 40000 & 1.923439 & 3.270247 & 0.012884 & 0.010967 \\
+5 & 50000 & 3.759927 & 7.306431 & 0.017963 & 0.015527 \\
+6 & 60000 & 4.311115 & 8.518162 & 0.028830 & 0.021768 \\
+7 & 70000 & 3.606635 & 6.099763 & 0.025063 & 0.029072 \\
+8 & 80000 & 7.144494 & 12.368523 & 0.017309 & 0.018718 \\
+9 & 90000 & 3.574068 & 10.166259 & 0.022601 & 0.031538 \\
+10 & 100000 & 7.407704 & 12.718501 & 0.022318 & 0.026166 \\
   \bottomrule
   \end{tabular}
 \caption{Wyniki pomiarów porównujące wydajność QuadTree i KdTree dla zbioru punktów o rozkładzie na bokach prostokąta.}
@@ -1888,10 +1899,11 @@ Podczas budowy drzewa QuadTree czas diametralnie wzrósł w okolicach 70.000 pun
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.5\textwidth]{resources/rectangle_graph.png}
-  \caption{Wykres porównujący wydajność QuadTree i KdTree dla zbioru punktów o rozkładzie na bokach prostokąta.}
+  \caption{Wykres porównujący wydajność QuadTree i KdTree dla zbioru punktów o rozkładzie prostokątnym.}
   \label{fig:rectangle_graph}
 \end{figure}
 
+\newpage
 \subsection{Porównanie efektywności QuadTree dla różnych wartości max\_capacity}
 Przeprowadzono testy dla różnych wartości max\_capacity, aby sprawdzić jak wpływa ona na czas konstrukcji i przeszukiwania QuadTree.
 
