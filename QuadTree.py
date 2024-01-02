@@ -229,7 +229,7 @@ class QuadTreeNode_v:
             vis.add_point(points, color = "orange")
 
     def _if_contains(self, point, vis):
-        vis.add_polygon(self._rectangle.vertices2D, color="orange",alpha=0.3)
+        vis.remove_figure(vis.add_polygon(self._rectangle.vertices2D, color="orange",alpha=0.3))
         if self._left_up is None:
             if point in self.points:
                 vis.add_point([point], color = "lime")
