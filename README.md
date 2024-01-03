@@ -51,3 +51,5 @@ The project includes interactive visualizations of the QuadTree and KD-Tree data
 
 ## Tests
 The project includes a suite of unit tests covering all classes, written with python unittest. Also KdTree and QuadTree have their own integration tests. All tests are located in the `tests` folder and `TestManager.py`.
+
+<img src="https://github.com/radoslawrolka/QuadTree_and_KdTree/blob/master/documentation/resources/cluster.png" width=49%> <img src="https://github.com/radoslawrolka/QuadTree_and_KdTree/blob/master/documentation/resources/outlier.png" width=50%>
