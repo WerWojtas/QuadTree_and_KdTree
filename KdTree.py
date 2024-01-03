@@ -62,8 +62,14 @@ class KdTreeNode:
             median = (len(points)-1) // 2
             self._axis = points[median][depth % len(points[median])]
             lr, rr = self._rectangle.divide(depth % len(self._rectangle), self._axis)
-            self._left = KdTreeNode([p for p in points if lr.contains(p)], lr, depth + 1, points_in_node)
-            self._right = KdTreeNode([p for p in points if not lr.contains(p)], rr, depth + 1, points_in_node)
+            med = median
+            for point in points[median+1:]:
+                if point[depth % len(points[median])] == points[median][depth % len(points[median])]:
+                    med += 1
+                else:
+                    break
+            self._left = KdTreeNode(points[:med+1], lr, depth + 1, points_in_node)
+            self._right = KdTreeNode(points[med+1:], rr, depth + 1, points_in_node)
 
     # check if the tree contains the point
     def _if_contains(self, point):
@@ -185,8 +191,14 @@ class KdTreeNode_v:
             self._axis = points[median][depth % len(points[median])]
             self.vis.add_line_segment([self._rectangle.opposite(points[median].point, depth%2)], color='blue')
             lr, rr = self._rectangle.divide(depth % len(self._rectangle), self._axis)
-            self._left = KdTreeNode_v([p for p in points if lr.contains(p)], lr, self.vis, self.scene, depth + 1, points_in_node)
-            self._right = KdTreeNode_v([p for p in points if not lr.contains(p)], rr, self.vis, self.scene, depth + 1, points_in_node)
+            med = median
+            for point in points[median+1:]:
+                if point[depth % len(points[median])] == points[median][depth % len(points[median])]:
+                    med += 1
+                else:
+                    break
+            self._left = KdTreeNode_v(points[:med+1], lr, self.vis, self.scene, depth + 1, points_in_node)
+            self._right = KdTreeNode_v(points[med+1:], rr, self.vis, self.scene, depth + 1, points_in_node)
 
     # check if the tree contains the point
     def _if_contains(self, point, vis):
